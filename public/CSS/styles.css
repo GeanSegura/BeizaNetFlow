@@ -1,0 +1,51 @@
+.form-control{
+    width:76%;
+    border: 2px solid black;
+}
+
+.laboratorio-producto-div {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    margin-bottom: 16px;
+    gap: 12px;
+}
+
+.btn-info-modifacion{
+    height: 40px;
+    width: 120px;
+}
+
+.agregar-lote-div{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 8px;
+}
+
+.btn-info-agregar{
+    height: 40px;
+    width: 80px;
+}
+
+.salir-sistema-a{
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.salir-sistema-a:hover{
+    font-size: 20px;
+}
+
+.salir-sistema-nav:hover
+{
+    border-radius: 4px;
+    border: 2px solid black;
+    width: 200px;
+    padding: 4px;
+    box-sizing: border-box;
+}
+
+
+
+
+

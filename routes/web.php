@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SubirArchivoController;
 use App\Http\Controllers\ArchivoMostrarController;
 use App\Http\Controllers\DescargarArchivoController;
+use App\Http\Controllers\AutenticacionController;
+use App\Http\Controllers\GestionLotesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,8 +19,15 @@ use App\Http\Controllers\DescargarArchivoController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('login');
 });
+Route::post('/login', [AutenticacionController::class, 'login'])->name('login');
+
+Route::get('/GestionLotes', [GestionLotesController::class, 'index'])->name('GestionLotes');
+
+
+Route::get('/GestionLotesLaboratorio/{laboratorio_id}', [GestionLotesController::class, 'obtenerArticulos'])->name('GestionLotesLaboratorio');
+
 
 Route::post('/Subir', [SubirArchivoController::class, 'Guardar'])->name('archivo.cargar');
 Route::get('/VerArchivo/{fileName}', [ArchivoMostrarController::class, 'mostrarArchivo'])->name('archivo.mostrar');

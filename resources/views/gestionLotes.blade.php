@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Lotes</title>
+    <link href=" https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="CSS/styles.css">
+
+
+</head>
+
+<body>
+    <nav class="navbar bg-primary" data-bs-theme="dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Menú</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText"
+                aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="salir-sistema-nav">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="black" class="bi bi-box-arrow-right" viewBox="0 0 18 18">
+                            <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
+                            <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
+                          </svg>
+
+                        <a class="salir-sistema-a" href="#">Salir del sistema</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1 class="mb-4">Gestión de Lotes</h1>
+
+
+        <div class="laboratorio-producto-div">
+
+            <div class="laboratorio-div">
+
+               
+                <input type="hidden" id="laboratorio_id" name="laboratorio_id">
+                
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Laboratorio</span>
+                    <input class="form-control" list="datalistOptions" name="laboratorio" id="laboratorio"
+                        placeholder="Escriba el nombre del laboratorio">
+                </div>
+<!-- Input oculto para el id -->
+
+                <datalist id="datalistOptions">
+                    @foreach ($laboratorios as $laboratorio)
+                        <option value="{{ $laboratorio->nombre_laboratorio }}"
+                            data-id="{{ $laboratorio->laboratorio_id }}">
+                            {{ $laboratorio->laboratorio_id }}
+                        </option>
+                    @endforeach
+                </datalist>
+
+            </div>
+
+            <div class="producto-div">
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="inputGroup-sizing-default">Artículo</span>
+
+                    <input class="form-control" list="datalistOptionsProductos" id="productoDataList"
+                        placeholder="Escriba el nombre del Artículo">
+                    <datalist id="datalistOptionsProductos">
+                    </datalist>
+                </div>
+
+            </div>
+
+
+            <button type="submit" id="button-buscar" class="btn btn-info btn-info-modifacion"  >Buscar</button>
+
+        </div>
+
+        <div class="agregar-lote-div">
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-default">ID Lote</span>
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-default">
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-default">Almacen</span>
+                <input type="text" class="form-control" aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-default">
+            </div>
+
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-default">Fecha de creación</span>
+                <input type="date" class="form-control" aria-label="Sizing example input"
+                    aria-describedby="inputGroup-sizing-default">
+            </div>
+
+            <button type="submit" id="button-buscar" class="btn btn-success btn-info-agregar" disabled >Agregar</button>
+
+        </div>
+
+
+
+
+
+        <!-- Tabla de lotes -->
+        <table class="table table-bordered border-black">
+            <thead>
+                <tr>
+                    <th>ID Lote</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="lotTable">
+                <!-- Filas dinámicas -->
+                <tr>
+                    <td>9828</td>
+                    <td>
+
+
+                        <!-- Botón para mostrar el iframe -->
+                        <button id="ver-archivo" type="button" class="btn btn-secondary btn-sm me-2"
+                            onclick="document.getElementById('iframe-container').style.display='block';">
+                            Ver Archivo
+                        </button>
+
+                        <button id="descargar-archivo" class="btn btn-success btn-sm me-2 descargar-archivo"
+                            data-lote-id="1">Descargar Archivo</button>
+
+                        <button class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#uploadModal"
+                            data-lote-id="1">Subir Archivo</button>
+
+                        <button id="eliminar-archivo" class="btn btn-danger btn-sm me-2 eliminar-archivo"
+                            data-lote-id="1">Eliminar Archivo</button>
+
+
+                        <div id="iframe-container" style="display:none; position:relative;">
+                            <button type="button" class="btn-close" aria-label="Close"
+                                onclick="document.getElementById('iframe-container').style.display='none';"
+                                style="position:absolute; top:10px; right:0px;"></button>
+                            <iframe id="iframe-mostrar" src="" width="800" height="400"></iframe>
+                        </div>
+
+
+
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal para subir archivos -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalLabel">Subir Archivo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <input type="hidden" id="loteId" name="loteId">
+                        <div class="mb-3">
+                            <label for="fileInput" class="form-label">Selecciona un archivo (PDF o Imagen):</label>
+                            <input type="file" class="form-control" id="fileInput" name="file" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Subir</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="./subirArchivo.js"></script>
+
+
+</body>
+
+</html>

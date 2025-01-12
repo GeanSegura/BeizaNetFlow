@@ -1,3 +1,46 @@
+document.getElementById('laboratorio').addEventListener('input', function () {
+
+    var articulosList1 = document.getElementById('productoDataList');
+    articulosList1.innerHTML = ''; // Limpiar el datalist de artículos
+    var articulosList = document.getElementById('datalistOptionsProductos');
+    articulosList.innerHTML = ''; // Limpiar el datalist de artículos
+
+    var laboratorioNombre = this.value; // Obtener el nombre del laboratorio seleccionado
+    var laboratorioId = null;
+
+    // Buscar la opción en el datalist correspondiente al nombre del laboratorio
+    var options = document.querySelectorAll('#datalistOptions option');
+    options.forEach(function (option) {
+        if (option.value === laboratorioNombre) {
+            laboratorioId = option.getAttribute('data-id'); // Obtener el laboratorio_id
+        }
+    });
+
+    if (laboratorioId) {
+        // Establecer el valor del input oculto con el laboratorio_id
+        document.getElementById('laboratorio_id').value = laboratorioId;
+
+        // Realizar la solicitud para obtener los artículos de ese laboratorio usando Axios
+        axios.get(`/GestionLotesLaboratorio/${laboratorioId}`)
+            .then(function (response) {
+                // Llenar el datalist de artículos con los datos obtenidos
+                var articulosList = document.getElementById('datalistOptionsProductos');
+                articulosList.innerHTML = ''; // Limpiar el datalist de artículos
+
+                response.data.forEach(function (articulo) {
+                    var option = document.createElement('option');
+                    option.value = articulo.nombre_articulo;
+                    option.textContent = articulo.id_laboratorio;
+                    articulosList.appendChild(option); // Añadir el artículo al datalist
+                });
+            })
+            .catch(function (error) {
+                console.error('Error al obtener los artículos:', error);
+            });
+    }
+});
+
+
 
 let loteId = null;
 
