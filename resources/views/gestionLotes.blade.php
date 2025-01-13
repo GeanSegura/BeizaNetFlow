@@ -22,10 +22,13 @@
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="salir-sistema-nav">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="black" class="bi bi-box-arrow-right" viewBox="0 0 18 18">
-                            <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z"/>
-                            <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z"/>
-                          </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="black"
+                            class="bi bi-box-arrow-right" viewBox="0 0 18 18">
+                            <path fill-rule="evenodd"
+                                d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0z" />
+                            <path fill-rule="evenodd"
+                                d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
+                        </svg>
 
                         <a class="salir-sistema-a" href="#">Salir del sistema</a>
                     </li>
@@ -34,23 +37,30 @@
         </div>
     </nav>
 
+    <div id="overlay" style="display: none;">
+        <div id="loader" class="spinner-border text-primary" style="width: 5rem; height: 5rem;" role="status">
+            <span class="visually-hidden">Cargando...</span>
+        </div>
+    </div>
+
     <div class="container mt-5">
         <h1 class="mb-4">Gestión de Lotes</h1>
 
 
         <div class="laboratorio-producto-div">
 
+           
             <div class="laboratorio-div">
 
-               
+
                 <input type="hidden" id="laboratorio_id" name="laboratorio_id">
-                
+
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="inputGroup-sizing-default">Laboratorio</span>
                     <input class="form-control" list="datalistOptions" name="laboratorio" id="laboratorio"
                         placeholder="Escriba el nombre del laboratorio">
                 </div>
-<!-- Input oculto para el id -->
+                <!-- Input oculto para el id -->
 
                 <datalist id="datalistOptions">
                     @foreach ($laboratorios as $laboratorio)
@@ -77,7 +87,8 @@
             </div>
 
 
-            <button type="submit" id="button-buscar" class="btn btn-info btn-info-modifacion"  >Buscar</button>
+            <button type="submit" id="button-buscar" class="btn btn-secondary btn-info-modifacion">Buscar</button>
+            <button type="submit" id="button-limpiar" class="btn btn-info btn-info-modifacion">Limpiar</button>
 
         </div>
 
@@ -86,74 +97,88 @@
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-default">ID Lote</span>
                 <input type="text" class="form-control" aria-label="Sizing example input"
-                    aria-describedby="inputGroup-sizing-default">
+                    aria-describedby="inputGroup-sizing-default" id="loteId">
             </div>
 
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-default">Almacen</span>
                 <input type="text" class="form-control" aria-label="Sizing example input"
-                    aria-describedby="inputGroup-sizing-default">
+                    aria-describedby="inputGroup-sizing-default" id="almacen">
             </div>
 
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-default">Fecha de creación</span>
                 <input type="date" class="form-control" aria-label="Sizing example input"
-                    aria-describedby="inputGroup-sizing-default">
+                    aria-describedby="inputGroup-sizing-default" id="fechaCreacion">
             </div>
 
-            <button type="submit" id="button-buscar" class="btn btn-success btn-info-agregar" disabled >Agregar</button>
+            <button type="submit" id="button-agregar" class="btn btn-success btn-info-agregar" disabled>Agregar</button>
+
+            <div id="mensajeRespuesta" class="mt-3"></div>
 
         </div>
 
+        <div class="buscar-lote-div">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="inputGroup-sizing-default">Buscar lote</span>
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Buscar</button>
 
-
+            </div>
+        </div>
 
 
         <!-- Tabla de lotes -->
-        <table class="table table-bordered border-black">
+        <table class="table table-bordered border-black" >
             <thead>
                 <tr>
                     <th>ID Lote</th>
-                    <th>Acciones</th>
+                    <th>Acciones archivos</th>
+                    <th>Acciones lotes</th>
                 </tr>
             </thead>
             <tbody id="lotTable">
-                <!-- Filas dinámicas -->
-                <tr>
-                    <td>9828</td>
-                    <td>
-
-
-                        <!-- Botón para mostrar el iframe -->
-                        <button id="ver-archivo" type="button" class="btn btn-secondary btn-sm me-2"
-                            onclick="document.getElementById('iframe-container').style.display='block';">
-                            Ver Archivo
-                        </button>
-
-                        <button id="descargar-archivo" class="btn btn-success btn-sm me-2 descargar-archivo"
-                            data-lote-id="1">Descargar Archivo</button>
-
-                        <button class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#uploadModal"
-                            data-lote-id="1">Subir Archivo</button>
-
-                        <button id="eliminar-archivo" class="btn btn-danger btn-sm me-2 eliminar-archivo"
-                            data-lote-id="1">Eliminar Archivo</button>
-
-
-                        <div id="iframe-container" style="display:none; position:relative;">
-                            <button type="button" class="btn-close" aria-label="Close"
-                                onclick="document.getElementById('iframe-container').style.display='none';"
-                                style="position:absolute; top:10px; right:0px;"></button>
-                            <iframe id="iframe-mostrar" src="" width="800" height="400"></iframe>
-                        </div>
-
-
-
-                    </td>
-                </tr>
 
             </tbody>
+
+                <!-- Botón para mostrar el iframe -->
+                <button id="ver-archivo" type="button" class="btn btn-secondary btn-sm me-2"
+                    onclick="document.getElementById('iframe-container').style.display='block';" style="display: none;">
+                    Ver Archivo
+                </button>
+
+                <button id="descargar-archivo" class="btn btn-success btn-sm me-2 descargar-archivo"
+                    data-lote-id="1" style="display: none;">Descargar Archivo</button>
+
+                <button class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
+                    data-bs-target="#uploadModal" data-lote-id="1" style="display: none;">Subir Archivo</button>
+
+                <button id="eliminar-archivo" class="btn btn-danger btn-sm me-2 eliminar-archivo"
+                    data-lote-id="1" style="display: none;">Eliminar Archivo</button>
+
+
+                <div class="iframe-div" id="iframe-container" style="display:none; position:relative;">
+                    <button type="button" class="btn-close" aria-label="Close"
+                        onclick="document.getElementById('iframe-container').style.display='none';"
+                        style="position:absolute; top:10px; right:0px;" style="display: none;"></button>
+                    <iframe id="iframe-mostrar" src="" width="800" height="400"></iframe>
+                </div>
+
+                <button id="eliminar-archivo" class="btn btn-warning btn-sm me-2 eliminar-archivo"
+                    data-lote-id="1" style="display: none;">Modificar lote</button>
+
+                <button id="eliminar-archivo" class="btn btn-success btn-sm me-2 eliminar-archivo"
+                    data-lote-id="1" style="display: none;">Guardar lote</button>
+
+
+                <button id="eliminar-archivo" class="btn btn-danger btn-sm me-2 eliminar-archivo"
+                    data-lote-id="1" style="display: none;">Eliminar lote</button>
+
+
         </table>
+
+        <div id="pagination" class="mt-3"></div>
+
     </div>
 
     <!-- Modal para subir archivos -->

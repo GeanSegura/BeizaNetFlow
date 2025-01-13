@@ -27,7 +27,8 @@ Route::get('/GestionLotes', [GestionLotesController::class, 'index'])->name('Ges
 
 
 Route::get('/GestionLotesLaboratorio/{laboratorio_id}', [GestionLotesController::class, 'obtenerArticulos'])->name('GestionLotesLaboratorio');
-
+Route::get('/GestionLotesArticulo/{articulo_id}', [GestionLotesController::class, 'obtenerLotes'])->name('GestionLotesArticulo');
+Route::match(['get', 'post'], 'AgregarObtenerLote', [GestionLotesController::class, 'agregarObtenerLote']);
 
 Route::post('/Subir', [SubirArchivoController::class, 'Guardar'])->name('archivo.cargar');
 Route::get('/VerArchivo/{fileName}', [ArchivoMostrarController::class, 'mostrarArchivo'])->name('archivo.mostrar');
