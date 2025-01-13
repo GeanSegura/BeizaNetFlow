@@ -27,7 +27,7 @@ class RedirectIfAuthenticated
             }
         }
 
-        if (!$request->secure()) {
+        if (app()->environment('production') && !$request->secure()) {
             return redirect()->secure($request->getRequestUri());
         }
     
