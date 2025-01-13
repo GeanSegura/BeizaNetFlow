@@ -27,7 +27,7 @@
 }
 
 .salir-sistema-a{
-    color: black;
+    color: white;
     font-weight: bold;
     text-decoration: none;
 }
@@ -102,4 +102,11 @@ body {
     pointer-events: auto; /* Habilitar eventos después del loader */
 }
 
+.bg-primary {
+    --bs-bg-opacity: 1;
+    background-color: #232824 !important;
+}
 
+.bi-box-arrow-right{
+    background-color: white !important;
+}

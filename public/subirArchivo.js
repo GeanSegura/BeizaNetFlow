@@ -37,13 +37,13 @@ document.getElementById('laboratorio').addEventListener('input', function () {
                 });
 
                 // Ocultar el loader una vez que los datos han sido cargados
-                document.getElementById('overlay').style.display ='none';
+                document.getElementById('overlay').style.display = 'none';
             })
             .catch(function (error) {
                 console.error('Error al obtener los artículos:', error);
 
                 // Ocultar el loader en caso de error
-                document.getElementById('overlay').style.display ='none';
+                document.getElementById('overlay').style.display = 'none';
             });
     }
 });
@@ -207,15 +207,15 @@ function actualizarTabla(data) {
     const tabla = document.getElementById('lotTable');
     tabla.innerHTML = ''; // Limpiar tabla
 
-    
+
 
     data.forEach(lote => {
         const fila = `
             <tr id="lote-${lote.lote_id}"> <!-- Agregar un id único para cada fila -->
                 <td>${lote.lote_id}</td>
                 <td>
-                    <button class="btn btn-secondary btn-sm me-2" onclick="mostrarArchivo(${lote.lote_id})">
-                        Ver Archivo
+                    <button class="btn btn-secondary btn-sm me-2" onclick="mostrarArchivo('${lote.lote_id}')">
+            Ver Archivo
                     </button>
                     <button class="btn btn-success btn-sm me-2 descargar-archivo" data-lote-id="${lote.lote_id}">
                         Descargar Archivo
@@ -300,10 +300,12 @@ function cambiarPagina(page) {
 
 // Botones AWS
 function mostrarArchivo(loteId) {
+
     const fileName = "1736522160_2051833-DILOVET 250MG.pdf"; // Aquí puedes reemplazarlo por una variable si es dinámico
 
     axios.get(`/VerArchivo/${fileName}`, { responseType: 'blob' })
         .then(response => {
+
             const url = URL.createObjectURL(response.data); // Crea un objeto URL a partir de la respuesta binaria
 
             // Encuentra la fila correspondiente al loteId
@@ -395,20 +397,20 @@ document.getElementById('button-agregar').addEventListener('click', function () 
         fecha_creacion: fechaCreacion,
         articulo_id: articuloId
     })
-    .then(response => {
-        document.getElementById('mensajeRespuesta').textContent = 'Lote agregado exitosamente.';
-        document.getElementById('mensajeRespuesta').classList.add('text-success');
+        .then(response => {
+            document.getElementById('mensajeRespuesta').textContent = 'Lote agregado exitosamente.';
+            document.getElementById('mensajeRespuesta').classList.add('text-success');
 
-        // Limpiar los campos
-        document.getElementById('loteId').value = '';
-        document.getElementById('almacen').value = '';
-        document.getElementById('fechaCreacion').value = '';
-    })
-    .catch(error => {
-        console.error('Error al agregar el lote:', error);
-        document.getElementById('mensajeRespuesta').textContent = 'Error al agregar el lote.';
-        document.getElementById('mensajeRespuesta').classList.add('text-danger');
-    });
+            // Limpiar los campos
+            document.getElementById('loteId').value = '';
+            document.getElementById('almacen').value = '';
+            document.getElementById('fechaCreacion').value = '';
+        })
+        .catch(error => {
+            console.error('Error al agregar el lote:', error);
+            document.getElementById('mensajeRespuesta').textContent = 'Error al agregar el lote.';
+            document.getElementById('mensajeRespuesta').classList.add('text-danger');
+        });
 
 
     if (articuloSeleccionado) {
