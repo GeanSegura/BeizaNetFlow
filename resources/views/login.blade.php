@@ -26,8 +26,7 @@
 
                     <div class="form-check">
                         <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input">
-                            <small>Registrarse</small>
+                            <a href={{ route('registrar')}} id="registrar-a" class="registrarse-a">Registrarse</a>
                         </label>
                         <button type="submit" class="btn btn-login float-right">Ingresar</button>
                     </div>

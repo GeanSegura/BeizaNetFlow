@@ -100,19 +100,19 @@
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-default">ID Lote</span>
                 <input type="text" class="form-control" aria-label="Sizing example input"
-                    aria-describedby="inputGroup-sizing-default" id="loteId">
+                    aria-describedby="inputGroup-sizing-default" id="loteId" disabled>
             </div>
 
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-default">Almacen</span>
                 <input type="text" class="form-control" aria-label="Sizing example input"
-                    aria-describedby="inputGroup-sizing-default" id="almacen">
+                    aria-describedby="inputGroup-sizing-default" id="almacen" disabled>
             </div>
 
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-default">Fecha de creación</span>
                 <input type="date" class="form-control" aria-label="Sizing example input"
-                    aria-describedby="inputGroup-sizing-default" id="fechaCreacion">
+                    aria-describedby="inputGroup-sizing-default" id="fechaCreacion" disabled>
             </div>
 
             <button type="submit" id="button-agregar" class="btn btn-success btn-info-agregar" disabled>Agregar</button>

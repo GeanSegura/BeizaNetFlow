@@ -48,51 +48,6 @@ document.getElementById('laboratorio').addEventListener('input', function () {
     }
 });
 
-// document.getElementById('laboratorio').addEventListener('input', function () {
-
-//     var articulosList1 = document.getElementById('productoDataList');
-//     articulosList1.innerHTML = ''; // Limpiar el datalist de artículos
-//     var articulosList = document.getElementById('datalistOptionsProductos');
-//     articulosList.innerHTML = ''; // Limpiar el datalist de artículos
-
-//     var laboratorioNombre = this.value; // Obtener el nombre del laboratorio seleccionado
-//     var laboratorioId = null;
-
-//     // Buscar la opción en el datalist correspondiente al nombre del laboratorio
-//     var options = document.querySelectorAll('#datalistOptions option');
-//     options.forEach(function (option) {
-//         if (option.value === laboratorioNombre) {
-//             laboratorioId = option.getAttribute('data-id'); // Obtener el laboratorio_id
-//         }
-//     });
-
-//     if (laboratorioId) {
-//         // Establecer el valor del input oculto con el laboratorio_id
-//         document.getElementById('laboratorio_id').value = laboratorioId;
-
-//         // Realizar la solicitud para obtener los artículos de ese laboratorio usando Axios
-//         axios.get(`/GestionLotesLaboratorio/${laboratorioId}`)
-//             .then(function (response) {
-//                 // Llenar el datalist de artículos con los datos obtenidos
-//                 var articulosList = document.getElementById('datalistOptionsProductos');
-//                 articulosList.innerHTML = ''; // Limpiar el datalist de artículos
-
-//                 response.data.forEach(function (articulo) {
-//                     var option = document.createElement('option');
-//                     option.value = articulo.nombre_articulo;
-//                     option.textContent = articulo.articulo_id;
-//                     option.setAttribute('data-articulo-id', articulo.articulo_id);
-//                     articulosList.appendChild(option); // Añadir el artículo al datalist
-//                 });
-//             })
-//             .catch(function (error) {
-//                 console.error('Error al obtener los artículos:', error);
-//             });
-//     }
-// });
-
-
-
 let loteId = null;
 
 // Capturar loteId al abrir el modal
@@ -101,31 +56,6 @@ document.querySelectorAll('[data-bs-target="#uploadModal"]').forEach(button => {
         loteId = button.getAttribute('data-lote-id');
         document.getElementById('loteId').value = loteId;
     });
-});
-
-// Subir archivo
-document.getElementById('uploadForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const formData = new FormData(this);
-    axios.post('/Subir', formData)
-        .then(response => {
-            alert(response.data.message);
-
-            // Habilitar el botón de Ver Archivo
-            document.querySelector(`.ver-archivo[data-lote-id="${loteId}"]`).disabled = false;
-
-            // Cerrar el modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
-            modal.hide();
-
-            // Limpiar el formulario
-            this.reset();
-        })
-        .catch(error => {
-            console.error('Error al subir el archivo:', error);
-            alert('Hubo un problema al subir el archivo');
-        });
 });
 
 document.querySelectorAll('.descargar-archivo').forEach(button => {
@@ -179,15 +109,26 @@ document.getElementById('button-limpiar').addEventListener('click', function (e)
 
 let articuloId = 0; // Mover la declaración a un alcance global
 
+// inicio boton buscar
 document.getElementById('button-buscar').addEventListener('click', function () {
     // Capturar el valor del artículo seleccionado en el datalist
     var articuloSeleccionado = document.querySelector('#datalistOptionsProductos option[value="' + document.getElementById('productoDataList').value + '"]');
     var buttonAgregar = document.getElementById('button-agregar');
+    var iptLote = document.getElementById('loteId');
+    var iptAlmacen = document.getElementById('almacen');
+    var iptFecha = document.getElementById('fechaCreacion');
 
     buttonAgregar.disabled = false;
+    iptLote.disabled = false;
+    iptAlmacen.disabled = false;    
+    iptFecha.disabled = false;
+
+
 
     if (articuloSeleccionado) {
         articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
+        document.getElementById('overlay').style.display = 'flex';
+
         // Llamada AJAX para obtener los datos del artículo
         axios.get(`/GestionLotesArticulo/${articuloId}`)
             .then(response => {
@@ -197,33 +138,45 @@ document.getElementById('button-buscar').addEventListener('click', function () {
             .catch(error => {
                 console.error('Error al buscar el artículo:', error);
             });
+
+
+
     } else {
         alert('Seleccione un artículo válido.');
     }
 });
 
+// agregar botones
 function actualizarTabla(data) {
     // Limpiar la tabla antes de actualizarla
     const tabla = document.getElementById('lotTable');
     tabla.innerHTML = ''; // Limpiar tabla
 
-
-
     data.forEach(lote => {
+        // Comprobamos si 'is_archivo' está vacío o tiene un valor
+        const isArchivoVacio = !lote.is_archivo || lote.is_archivo === '';
+
         const fila = `
             <tr id="lote-${lote.lote_id}"> <!-- Agregar un id único para cada fila -->
                 <td>${lote.lote_id}</td>
                 <td>
-                    <button class="btn btn-secondary btn-sm me-2" onclick="mostrarArchivo('${lote.lote_id}')">
-            Ver Archivo
+                    <button class="btn btn-secondary btn-sm me-2" onclick="mostrarArchivo('${lote.lote_id}')"
+                        ${isArchivoVacio ? 'disabled' : ''}>
+                        Ver Archivo
                     </button>
-                    <button class="btn btn-success btn-sm me-2 descargar-archivo" data-lote-id="${lote.lote_id}">
-                        Descargar Archivo
-                    </button>
-                    <button class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#uploadModal" data-lote-id="${lote.lote_id}">
+
+                    <button class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#uploadModal" onclick="subirArchivo('${lote.lote_id}')"
+                        ${isArchivoVacio ? '' : 'disabled'}>
                         Subir Archivo
                     </button>
-                    <button class="btn btn-danger btn-sm me-2 eliminar-archivo" data-lote-id="${lote.lote_id}">
+
+                    <button class="btn btn-success btn-sm me-2 descargar-archivo" onclick="descargarArchivo('${lote.lote_id}')"
+                        ${isArchivoVacio ? 'disabled' : ''}>
+                        Descargar Archivo
+                    </button>
+
+                    <button class="btn btn-danger btn-sm me-2 eliminar-archivo" data-lote-id="${lote.lote_id}"
+                        ${isArchivoVacio ? 'disabled' : ''}>
                         Eliminar Archivo
                     </button>
                 </td>
@@ -231,10 +184,12 @@ function actualizarTabla(data) {
                     <button class="btn btn-warning btn-sm me-2 modificar-lote" data-lote-id="${lote.lote_id}">
                         Modificar lote
                     </button>
+
                     <button class="btn btn-success btn-sm me-2 guardar-lote" data-lote-id="${lote.lote_id}">
                         Guardar lote
                     </button>
-                    <button class="btn btn-danger btn-sm me-2 eliminar-lote" data-lote-id="${lote.lote_id}">
+
+                    <button class="btn btn-danger btn-sm me-2 eliminar-lote" onclick="eliminarLote('${lote.lote_id}')">
                         Eliminar lote
                     </button>
                 </td>
@@ -242,9 +197,14 @@ function actualizarTabla(data) {
         `;
         tabla.insertAdjacentHTML('beforeend', fila);
     });
+
+    document.getElementById('overlay').style.display = 'none';
 }
 
+
 function manejarPaginacion(paginacion) {
+
+
     const paginationContainer = document.getElementById('pagination');
     paginationContainer.innerHTML = ''; // Limpiar el contenedor de paginación
 
@@ -284,10 +244,13 @@ function manejarPaginacion(paginacion) {
     ul.appendChild(nextItem);
 
     paginationContainer.appendChild(ul);
+    document.getElementById('overlay').style.display = 'none';
+
 }
 
 function cambiarPagina(page) {
     // Simulación de solicitud de datos para la nueva página
+    document.getElementById('overlay').style.display = 'flex';
     axios.get(`/GestionLotesArticulo/${articuloId}?page=${page}`)
         .then(response => {
             actualizarTabla(response.data.data);
@@ -295,10 +258,15 @@ function cambiarPagina(page) {
         })
         .catch(error => {
             console.error('Error al cambiar de página:', error);
+        })
+        .finally(() => {
+            // Código que se ejecuta siempre
+            document.getElementById('overlay').style.display = 'none';
         });
+
 }
 
-// Botones AWS
+// Boton mostrar archivo
 function mostrarArchivo(loteId) {
 
     const fileName = "1736522160_2051833-DILOVET 250MG.pdf"; // Aquí puedes reemplazarlo por una variable si es dinámico
@@ -370,6 +338,59 @@ function mostrarArchivo(loteId) {
         });
 }
 
+// document.getElementById('uploadForm').addEventListener('submit', function (e) {
+//     e.preventDefault();
+
+//     const formData = new FormData(this);
+//     axios.post('/Subir', formData)
+//         .then(response => {
+//             alert(response.data.message);
+
+//             // Habilitar el botón de Ver Archivo
+//             document.querySelector(`.ver-archivo[data-lote-id="${loteId}"]`).disabled = false;
+
+//             // Cerrar el modal
+//             const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
+//             modal.hide();
+
+//             // Limpiar el formulario
+//             this.reset();
+//         })
+//         .catch(error => {
+//             console.error('Error al subir el archivo:', error);
+//             alert('Hubo un problema al subir el archivo');
+//         });
+// });
+
+// boton subir archivo 
+
+function subirArchivo(loteId) {
+    document.getElementById('uploadForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        formData.append('lote_id', loteId); // Agrega loteId al FormData
+
+        axios.post('/Subir', formData)
+            .then(response => {
+                alert(response.data.file);
+
+                // Cerrar el modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
+                modal.hide();
+
+                // Limpiar el formulario
+                this.reset();
+            })
+            .catch(error => {
+                console.error('Error al subir el archivo:', error);
+                alert('Hubo un problema al subir el archivo');
+            });
+    }, { once: true }); // Escuchar solo una vez para evitar múltiples manejadores
+}
+
+// fin boton subir archivo
+
 // inicio agregar lote
 
 document.getElementById('button-agregar').addEventListener('click', function () {
@@ -384,13 +405,14 @@ document.getElementById('button-agregar').addEventListener('click', function () 
         articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
     }
 
-    // Validación básica
+
     if (!loteId || !almacen || !fechaCreacion) {
         alert('Por favor, complete todos los campos.');
         return;
     }
 
-    // Enviar datos al servidor
+    document.getElementById('overlay').style.display = 'flex';
+
     axios.post('/AgregarObtenerLote', {
         lote_id: loteId,
         almacen: almacen,
@@ -398,8 +420,15 @@ document.getElementById('button-agregar').addEventListener('click', function () 
         articulo_id: articuloId
     })
         .then(response => {
-            document.getElementById('mensajeRespuesta').textContent = 'Lote agregado exitosamente.';
+            var rptaS = response.data.mensaje;
+           
+            if (  rptaS == '1'  ){
+            document.getElementById('mensajeRespuesta').textContent = 'El Lote agregado exitosamente.';
             document.getElementById('mensajeRespuesta').classList.add('text-success');
+            }else{
+            document.getElementById('mensajeRespuesta').textContent = 'El lote ya existe.';
+            document.getElementById('mensajeRespuesta').classList.add('text-danger');
+            }
 
             // Limpiar los campos
             document.getElementById('loteId').value = '';
@@ -410,11 +439,17 @@ document.getElementById('button-agregar').addEventListener('click', function () 
             console.error('Error al agregar el lote:', error);
             document.getElementById('mensajeRespuesta').textContent = 'Error al agregar el lote.';
             document.getElementById('mensajeRespuesta').classList.add('text-danger');
+        })
+        .finally(() => {
+            // Código que se ejecuta siempre
+            document.getElementById('overlay').style.display = 'none';
         });
 
 
     if (articuloSeleccionado) {
         articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
+
+        document.getElementById('overlay').style.display = 'flex';
         // Llamada AJAX para obtener los datos del artículo
         axios.get(`/GestionLotesArticulo/${articuloId}`)
             .then(response => {
@@ -423,12 +458,75 @@ document.getElementById('button-agregar').addEventListener('click', function () 
             })
             .catch(error => {
                 console.error('Error al buscar el artículo:', error);
+            })
+            .finally(() => {
+                // Código que se ejecuta siempre
+                document.getElementById('overlay').style.display = 'none';
             });
+           
+
     } else {
         alert('Seleccione un artículo válido.');
     }
 
 });
 
-
 // Fin agregar lote
+
+// Inicio eliminar lote
+function eliminarLote(loteId) {
+    var articuloSeleccionado = document.querySelector('#datalistOptionsProductos option[value="' + document.getElementById('productoDataList').value + '"]');
+    
+    if (!loteId) {
+        alert('ID del lote no válido.');
+        return;
+    }
+
+    // Mostrar loader mientras se procesa la eliminación
+    document.getElementById('overlay').style.display = 'flex';
+
+    axios.delete(`/EliminarLote/${loteId}`)
+        .then(response => {
+            document.getElementById('mensajeRespuesta').textContent = response.data.mensaje;
+            document.getElementById('mensajeRespuesta').classList.add('text-success');
+
+        })
+        .catch(error => {
+            console.error('Error al eliminar el lote:', error);
+            alert('No se pudo eliminar el lote.');
+        })
+        .finally(() => {
+            // Ocultar loader siempre
+            document.getElementById('overlay').style.display = 'flex';
+        });
+
+    if (articuloSeleccionado) {
+        articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
+    }
+
+    if (articuloSeleccionado) {
+        articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
+
+        // Llamada AJAX para obtener los datos del artículo
+        axios.get(`/GestionLotesArticulo/${articuloId}`)
+            .then(response => {
+                actualizarTabla(response.data.data); // Acceder a los datos paginados
+                manejarPaginacion(response.data); // Manejar la paginación
+            })
+            .catch(error => {
+                console.error('Error al buscar el artículo:', error);
+            })
+            .finally(() => {
+                // Código que se ejecuta siempre
+                document.getElementById('overlay').style.display = 'none';
+            });
+           
+
+    } else {
+        alert('Seleccione un artículo válido.');
+    }
+
+}
+
+// Fin eliminar lote
+

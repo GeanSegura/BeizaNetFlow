@@ -21,7 +21,9 @@ use App\Http\Controllers\GestionLotesController;
 Route::get('/', function () {
     return view('login');
 });
-Route::post('/login', [AutenticacionController::class, 'login'])->name('login');
+// Route::get('/login', [AutenticacionController::class, 'login'])->name('login');
+Route::match(['get', 'post'],'/login', [AutenticacionController::class, 'login'])->name('login');
+Route::match(['get', 'post'],'/registrarse', [AutenticacionController::class, 'registrar'])->name('registrar');
 
 Route::get('/GestionLotes', [GestionLotesController::class, 'index'])->name('GestionLotes');
 
@@ -29,7 +31,14 @@ Route::get('/GestionLotes', [GestionLotesController::class, 'index'])->name('Ges
 Route::get('/GestionLotesLaboratorio/{laboratorio_id}', [GestionLotesController::class, 'obtenerArticulos'])->name('GestionLotesLaboratorio');
 Route::get('/GestionLotesArticulo/{articulo_id}', [GestionLotesController::class, 'obtenerLotes'])->name('GestionLotesArticulo');
 Route::match(['get', 'post'], 'AgregarObtenerLote', [GestionLotesController::class, 'agregarObtenerLote']);
+Route::match(['get', 'delete'], '/EliminarLote/{lote_id}', [GestionLotesController::class, 'eliminarLote']);
+
+
 
 Route::post('/Subir', [SubirArchivoController::class, 'Guardar'])->name('archivo.cargar');
 Route::get('/VerArchivo/{fileName}', [ArchivoMostrarController::class, 'mostrarArchivo'])->name('archivo.mostrar');
 Route::get('/VerArchivo/{fileName}', [DescargarArchivoController::class, 'descargarArchivo'])->name('descargar.archivo');
+
+
+
+

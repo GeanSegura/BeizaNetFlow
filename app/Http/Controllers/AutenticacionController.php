@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Auth;
 
 class AutenticacionController extends Controller
 {
@@ -25,4 +26,9 @@ class AutenticacionController extends Controller
             return Redirect::back()->withErrors(['message' => 'Usuario o contraseña incorrectos']);
         }
     }
+
+    function registrar(){
+        return view('registrarse');
+    }
+   
 }

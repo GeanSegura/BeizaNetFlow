@@ -56,11 +56,27 @@ class GestionLotesController extends Controller
             ]);
         
             if ( $result[0]->validacion == '0') {
-                return response()->json(['mensaje' => 'Lote agregado exitosamente.']);
+                return response()->json(['mensaje' => '1']);
 
             } else {
-                return response()->json(['mensaje' => 'Lote no se ha guardado.']);
+                return response()->json(['mensaje' => '0']);
             }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e], 500);
+        }
+    }
+
+    function eliminarLote( $loteId)
+    {
+        try {
+    
+           
+            $result = DB::select('CALL eliminar_lote(?)', [
+                $loteId
+            ]);
+        
+                return response()->json(['mensaje' => 'Lote eliminado exitosamente.']);
+
         } catch (\Exception $e) {
             return response()->json(['error' => $e], 500);
         }

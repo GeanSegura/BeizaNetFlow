@@ -27,7 +27,7 @@
 
 .text-uppercase {
     font-weight: 400;
-    font-family: "DM Sans", serif;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .login-sec h2 {
@@ -57,5 +57,16 @@
 
 .login-sec .copy-text i {
     color: black;
+}
+
+.registrarse-a{
+    color:#312a55;
+    font-weight: 600;
+}
+
+.registrarse-a:hover{
+    color: #33aa87;
+    font-size: 16px;
+    font-weight: 600;
 }
 

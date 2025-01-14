@@ -1,0 +1,45 @@
+.mx-md-4 {
+    margin-right: 1.5rem!important;
+    margin-left: 1.5rem!important;
+    color: white;
+}
+
+body {
+    background-color: #121212; /* Fondo oscuro */
+    color: white; /* Texto blanco para combinar con el modo oscuro */
+}
+.card {
+    background-color: #1e1e1e; /* Fondo oscuro para el formulario */
+    border-radius: 25px;
+}
+.btn-primary {
+    background-color: #28a745; /* Botón verde */
+    border: none;
+}
+.btn-primary:hover {
+    background-color: #218838; /* Efecto hover verde */
+}
+.btn-secondary {
+    background-color: #6c757d; /* Botón gris */
+}
+.btn-secondary:hover {
+    background-color: #5a6268; /* Efecto hover gris */
+}
+.btn-volver {
+    background-color: #006400; /* Botón verde oscuro */
+    color: white;
+    border: none;
+}
+.btn-volver:hover {
+    background-color: #004d00; /* Efecto hover verde oscuro */
+}
+.form-control {
+    background-color: #333333; /* Fondo oscuro para los campos de entrada */
+    color: white; /* Texto blanco en los campos */
+    border: none; /* Sin borde */
+}
+.form-control:focus {
+    background-color: #444444; /* Fondo más claro cuando el campo está enfocado */
+    color: white;
+    box-shadow: none;
+}
