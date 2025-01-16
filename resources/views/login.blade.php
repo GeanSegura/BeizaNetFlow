@@ -44,15 +44,12 @@
                     </ol>
                     <div class="carousel-inner" role="listbox">
                         <div class="carousel-item active">
-                            <img class="d-block img-fluid" src="./img/FondoBeizaFlow.png"
+                            <img class="d-block img-fluid" src="./img/Fondo2025.png"
                                 alt="First slide">
                             <div class="carousel-caption d-none d-md-block">
                                 <div class="banner-text">
                                     <h2>Sobre Nosotros</h2>
-                                    <p>En Midhco Distribuciones, a través de BeizaNetFlow, optimizamos la gestión de
-                                        lotes con AWS, gracias a nuestra alianza como socios de AWS. Juntos,
-                                        automatizamos procesos y agilizamos la eficiencia de tu empresa, impulsando el
-                                        futuro digital</p>
+                                    <p>Midhco Distribuciones es una empresa con 20 años en el mercado farmacéutico, siendo líder en la zona centro del Perú y ofreciendo productos de la más alta calidad y certificación. Está guiada bajo nuestro eslogan “COMPROMISO DE INTEGRIDAD”, concepto que ha sido fundamental en la incursión de toda la familia del grupo Midhco, fundada por el matrimonio conyugal Vergara Eizaguirre.</p>
                                 </div>
                             </div>
                         </div>
@@ -63,24 +60,18 @@
                             <div class="carousel-caption d-none d-md-block">
                                 <div class="banner-text">
                                     <h2>Sobre Nosotros</h2>
-                                    <p>En Midhco Distribuciones, a través de BeizaNetFlow, optimizamos la gestión de
-                                        lotes con AWS, gracias a nuestra alianza como socios de AWS. Juntos,
-                                        automatizamos procesos y agilizamos la eficiencia de tu empresa, impulsando el
-                                        futuro digital</p>
+                                    <p>Midhco Distribuciones es una empresa con 20 años en el mercado farmacéutico, siendo líder en la zona centro del Perú y ofreciendo productos de la más alta calidad y certificación. Está guiada bajo nuestro eslogan “COMPROMISO DE INTEGRIDAD”, concepto que ha sido fundamental en la incursión de toda la familia del grupo Midhco, fundada por el matrimonio conyugal Vergara Eizaguirre.</p>
                                 </div>
                             </div>
                         </div>
                         <div class="carousel-item">
                             <img class="d-block img-fluid"
-                                src="./img/FondoBeizaFlow.png"
+                                src="./img/Fondo2025.png"
                                 alt="First slide">
                             <div class="carousel-caption d-none d-md-block">
                                 <div class="banner-text">
                                     <h2>Sobre Nosotros</h2>
-                                    <p>En Midhco Distribuciones, a través de BeizaNetFlow, optimizamos la gestión de
-                                        lotes con AWS, gracias a nuestra alianza como socios de AWS. Juntos,
-                                        automatizamos procesos y agilizamos la eficiencia de tu empresa, impulsando el
-                                        futuro digital</p>
+                                    <p>Midhco Distribuciones es una empresa con 20 años en el mercado farmacéutico, siendo líder en la zona centro del Perú y ofreciendo productos de la más alta calidad y certificación. Está guiada bajo nuestro eslogan “COMPROMISO DE INTEGRIDAD”, concepto que ha sido fundamental en la incursión de toda la familia del grupo Midhco, fundada por el matrimonio conyugal Vergara Eizaguirre.</p>
                                 </div>
                             </div>
                         </div>

@@ -74,7 +74,7 @@
                                
                             </div>
                             <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
-                                <img src="./img/FondoBeiza2.png" class="img-fluid" alt="Sample image">
+                                <img src="./img/Fondo2025.png" class="img-fluid" alt="Sample image">
                             </div>
                         </div>
                     </div>

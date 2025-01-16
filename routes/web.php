@@ -36,8 +36,8 @@ Route::match(['get', 'delete'], '/EliminarLote/{lote_id}', [GestionLotesControll
 
 
 Route::post('/Subir', [SubirArchivoController::class, 'Guardar'])->name('archivo.cargar');
-Route::get('/VerArchivo/{fileName}', [ArchivoMostrarController::class, 'mostrarArchivo'])->name('archivo.mostrar');
-Route::get('/VerArchivo/{fileName}', [DescargarArchivoController::class, 'descargarArchivo'])->name('descargar.archivo');
+Route::get('/VerArchivo/{loteId}', [ArchivoMostrarController::class, 'mostrarArchivo'])->name('archivo.mostrar');
+Route::get('/DescargarArchivo/{loteId}', [DescargarArchivoController::class, 'descargarArchivo'])->name('descargar.archivo');
 
 
 

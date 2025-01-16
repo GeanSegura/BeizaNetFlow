@@ -2,12 +2,25 @@
 
 namespace App\Http\Controllers;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 
 class DescargarArchivoController extends Controller
 {
-    function descargarArchivo($fileName) {
+    function descargarArchivo($loteId) {
+
+        $result = DB::select('CALL obtener_archivo_lote( ?)', [
+            $loteId,
+        ]);
+
+
+        if (!empty($result[0]->resultado ?? null)) {
+            $fileName = $result[0]->resultado;
+        } else {
+            $fileName = '';
+        }
+    
      // URL base de tu API Gateway
      $baseUrl = 'https://2w5hx6ly67.execute-api.sa-east-1.amazonaws.com/dev/beizanet-protocolos/';
         
