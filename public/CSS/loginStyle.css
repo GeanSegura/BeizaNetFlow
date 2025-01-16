@@ -70,14 +70,14 @@
     font-weight: 600;
 }
 
-.banner-text {
+.banner-text-m {
     width: 100% !important;
     position: absolute;
     bottom: 90px;
     padding-left: 20px;
 }
 
-.banner-text p {
+.banner-text_m p {
    font-size: 16px !important;
    font-family: Verdana, Geneva, Tahoma, sans-serif !important;
 }
