@@ -1,3 +1,5 @@
+var desactivar = JSON.parse(document.getElementById('app').getAttribute('data-desactivar'));
+
 document.getElementById('laboratorio').addEventListener('input', function () {
 
     var articulosList1 = document.getElementById('productoDataList');
@@ -147,7 +149,7 @@ function actualizarTabla(data) {
                     </button>
 
                     <button class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#uploadModal" onclick="subirArchivo('${lote.lote_id}')"
-                        ${isArchivoVacio ? '' : 'disabled'}>
+                        ${isArchivoVacio ? '' : 'disabled'} ${desactivar ? 'hidden' : ''}>
                         Subir Archivo
                     </button>
 
@@ -157,7 +159,7 @@ function actualizarTabla(data) {
                     </button>
 
                     <button class="btn btn-danger btn-sm me-2 eliminar-archivo" data-lote-id="${lote.lote_id}"
-                        ${isArchivoVacio ? 'disabled' : ''}>
+                        ${isArchivoVacio ? 'disabled' : ''} ${desactivar ? 'hidden' : ''}>
                         Eliminar Archivo
                     </button>
                 </td>
@@ -170,13 +172,14 @@ function actualizarTabla(data) {
                         Guardar lote
                     </button>
 
-                    <button class="btn btn-danger btn-sm me-2 eliminar-lote" onclick="eliminarLote('${lote.lote_id}')">
+                    <button class="btn btn-danger btn-sm me-2 eliminar-lote" onclick="eliminarLote('${lote.lote_id}')" ${desactivar ? 'hidden' : ''}>
                         Eliminar lote
                     </button>
                 </td>
             </tr>
         `;
         tabla.insertAdjacentHTML('beforeend', fila);
+
     });
 
     document.getElementById('overlay').style.display = 'none';

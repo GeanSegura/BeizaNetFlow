@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
+
 
 class GestionLotesController extends Controller
 {
@@ -14,7 +17,12 @@ class GestionLotesController extends Controller
     {
 
         $laboratorios = DB::select('CALL obtener_laboratorios()');
-        return view('gestionLotes', compact('laboratorios'));
+
+        $rol = Session::get('rol');
+
+        $desactivar = session('rol') !== '002';
+
+        return view('gestionLotes', compact('desactivar', 'laboratorios'));
     }
 
     function obtenerArticulos($laboratorio_id)

@@ -58,7 +58,7 @@
                                 src="./img/FondoBeizaFlow.png"
                                 alt="First slide">
                             <div class="carousel-caption d-none d-md-block">
-                                <div class="banner-text">
+                                <div class="banner-text-m">
                                     <h2>Sobre Nosotros</h2>
                                     <p>Midhco Distribuciones es una empresa con 20 años en el mercado farmacéutico, siendo líder en la zona centro del Perú y ofreciendo productos de la más alta calidad y certificación. Está guiada bajo nuestro eslogan “COMPROMISO DE INTEGRIDAD”, concepto que ha sido fundamental en la incursión de toda la familia del grupo Midhco, fundada por el matrimonio conyugal Vergara Eizaguirre.</p>
                                 </div>
@@ -69,7 +69,7 @@
                                 src="./img/Fondo2025.png"
                                 alt="First slide">
                             <div class="carousel-caption d-none d-md-block">
-                                <div class="banner-text">
+                                <div class="banner-text-m">
                                     <h2>Sobre Nosotros</h2>
                                     <p>Midhco Distribuciones es una empresa con 20 años en el mercado farmacéutico, siendo líder en la zona centro del Perú y ofreciendo productos de la más alta calidad y certificación. Está guiada bajo nuestro eslogan “COMPROMISO DE INTEGRIDAD”, concepto que ha sido fundamental en la incursión de toda la familia del grupo Midhco, fundada por el matrimonio conyugal Vergara Eizaguirre.</p>
                                 </div>

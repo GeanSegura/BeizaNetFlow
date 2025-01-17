@@ -97,31 +97,31 @@
 
         <div class="agregar-lote-div">
 
-            <div class="input-group mb-3">
+            <div class="input-group mb-3"  {{ $desactivar ? 'hidden' : '' }}>
                 <span class="input-group-text" id="inputGroup-sizing-default">ID Lote</span>
                 <input type="text" class="form-control" aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default" id="loteId" disabled>
             </div>
 
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" {{ $desactivar ? 'hidden' : '' }}>
                 <span class="input-group-text" id="inputGroup-sizing-default">Almacen</span>
                 <input type="text" class="form-control" aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default" id="almacen" disabled>
             </div>
 
-            <div class="input-group mb-3">
+            <div class="input-group mb-3" {{ $desactivar ? 'hidden' : '' }}>
                 <span class="input-group-text" id="inputGroup-sizing-default">Fecha de creación</span>
                 <input type="date" class="form-control" aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default" id="fechaCreacion" disabled>
             </div>
 
-            <button type="submit" id="button-agregar" class="btn btn-success btn-info-agregar" disabled>Agregar</button>
+            <button type="submit" id="button-agregar" class="btn btn-success btn-info-agregar" disabled {{ $desactivar ? 'hidden' : '' }}>Agregar</button>
 
             <div id="mensajeRespuesta" class="mt-3"></div>
 
         </div>
 
-        <div class="buscar-lote-div">
+        <div class="buscar-lote-div" {{ $desactivar ? 'hidden' : '' }}>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-default">Buscar lote</span>
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -144,39 +144,7 @@
 
             </tbody>
 
-                <!-- Botón para mostrar el iframe -->
-                <button id="ver-archivo" type="button" class="btn btn-secondary btn-sm me-2"
-                    onclick="document.getElementById('iframe-container').style.display='block';" style="display: none;">
-                    Ver Archivo
-                </button>
-
-                <button id="descargar-archivo" class="btn btn-success btn-sm me-2 descargar-archivo"
-                    data-lote-id="1" style="display: none;">Descargar Archivo</button>
-
-                <button class="btn btn-primary btn-sm me-2" data-bs-toggle="modal"
-                    data-bs-target="#uploadModal" data-lote-id="1" style="display: none;">Subir Archivo</button>
-
-                <button id="eliminar-archivo" class="btn btn-danger btn-sm me-2 eliminar-archivo"
-                    data-lote-id="1" style="display: none;">Eliminar Archivo</button>
-
-
-                <div class="iframe-div" id="iframe-container" style="display:none; position:relative;">
-                    <button type="button" class="btn-close" aria-label="Close"
-                        onclick="document.getElementById('iframe-container').style.display='none';"
-                        style="position:absolute; top:10px; right:0px;" style="display: none;"></button>
-                    <iframe id="iframe-mostrar" src="" width="800" height="400"></iframe>
-                </div>
-
-                <button id="eliminar-archivo" class="btn btn-warning btn-sm me-2 eliminar-archivo"
-                    data-lote-id="1" style="display: none;">Modificar lote</button>
-
-                <button id="eliminar-archivo" class="btn btn-success btn-sm me-2 eliminar-archivo"
-                    data-lote-id="1" style="display: none;">Guardar lote</button>
-
-
-                <button id="eliminar-archivo" class="btn btn-danger btn-sm me-2 eliminar-archivo"
-                    data-lote-id="1" style="display: none;">Eliminar lote</button>
-
+              
 
         </table>
 
@@ -205,6 +173,7 @@
             </div>
         </div>
     </div>
+    <div id="app" data-desactivar="{{ json_encode($desactivar) }}"></div>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>

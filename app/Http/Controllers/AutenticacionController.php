@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class AutenticacionController extends Controller
 {
@@ -19,7 +20,8 @@ class AutenticacionController extends Controller
         ]);
 
 
-        if ( $result[0]->resultado == '1') {
+        if ( $result[0]->RESULTADO == '1') {
+            Session::put('rol', $result[0]->ROL);
             return redirect()->route('GestionLotes'); 
         } else {
            
