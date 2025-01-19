@@ -7,8 +7,10 @@
     <title>Gestión de Lotes</title>
     <link href=" https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playwrite+PT+Guides&family=Playwrite+TZ:wght@100..400&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playwrite+PT+Guides&family=Playwrite+TZ:wght@100..400&family=Quicksand:wght@300..700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="CSS/styles.css">
 
 
@@ -33,7 +35,7 @@
                                 d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708z" />
                         </svg>
 
-                        <a class="salir-sistema-a" href="#">Salir del sistema</a>
+                        <a class="salir-sistema-a" href="login">Salir del sistema</a>
                     </li>
                 </ul>
             </div>
@@ -52,7 +54,7 @@
 
         <div class="laboratorio-producto-div">
 
-           
+
             <div class="laboratorio-div">
 
 
@@ -97,7 +99,7 @@
 
         <div class="agregar-lote-div">
 
-            <div class="input-group mb-3"  {{ $desactivar ? 'hidden' : '' }}>
+            <div class="input-group mb-3" {{ $desactivar ? 'hidden' : '' }}>
                 <span class="input-group-text" id="inputGroup-sizing-default">ID Lote</span>
                 <input type="text" class="form-control" aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default" id="loteId" disabled>
@@ -106,7 +108,13 @@
             <div class="input-group mb-3" {{ $desactivar ? 'hidden' : '' }}>
                 <span class="input-group-text" id="inputGroup-sizing-default">Almacen</span>
                 <input type="text" class="form-control" aria-label="Sizing example input"
-                    aria-describedby="inputGroup-sizing-default" id="almacen" disabled>
+                    aria-describedby="inputGroup-sizing-default" id="almacen" list="datalistOptionsTipoAlmacen" disabled>
+
+                <datalist id="datalistOptionsTipoAlmacen">
+                    <option value="HYO01">HYO01</option>
+                    <option value="HYO02">HYO02</option>
+                </datalist>
+
             </div>
 
             <div class="input-group mb-3" {{ $desactivar ? 'hidden' : '' }}>
@@ -115,7 +123,8 @@
                     aria-describedby="inputGroup-sizing-default" id="fechaCreacion" disabled>
             </div>
 
-            <button type="submit" id="button-agregar" class="btn btn-success btn-info-agregar" disabled {{ $desactivar ? 'hidden' : '' }}>Agregar</button>
+            <button type="submit" id="button-agregar" class="btn btn-success btn-info-agregar" disabled
+                {{ $desactivar ? 'hidden' : '' }}>Agregar</button>
 
             <div id="mensajeRespuesta" class="mt-3"></div>
 
@@ -132,7 +141,7 @@
 
 
         <!-- Tabla de lotes -->
-        <table class="table table-bordered border-black" >
+        <table class="table table-bordered border-black">
             <thead>
                 <tr>
                     <th>ID Lote</th>
@@ -144,7 +153,7 @@
 
             </tbody>
 
-              
+
 
         </table>
 

@@ -24,8 +24,13 @@ class AutenticacionController extends Controller
             Session::put('rol', $result[0]->ROL);
             return redirect()->route('GestionLotes'); 
         } else {
-           
-            return Redirect::back()->withErrors(['message' => 'Usuario o contraseña incorrectos']);
+            if(  $request->input('usuario') && $request->input('contrasena')){
+            $mensaje = "Usuario o contraseña incorrectos";
+            return view('login', compact('mensaje'));
+            }
+            else{
+                return view('login');
+            }
         }
     }
 

@@ -15,12 +15,12 @@
                     @csrf
                     <div class="form-group">
                         <label for="exampleInputEmail1" class="text-uppercase">Usuario</label>
-                        <input type="text" class="form-control" placeholder="" name="usuario">
+                        <input type="text" class="form-control" placeholder="" name="usuario" id="input-usuario">
 
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1" class="text-uppercase">Contreseña</label>
-                        <input type="password" class="form-control" placeholder="" name="contrasena">
+                        <input type="password" class="form-control" placeholder="" name="contrasena" id="input-contrasena">
                     </div>
 
 
@@ -28,12 +28,23 @@
                         <label class="form-check-label">
                             <a href={{ route('registrar')}} id="registrar-a" class="registrarse-a">Registrarse</a>
                         </label>
-                        <button type="submit" class="btn btn-login float-right">Ingresar</button>
+                        <button type="submit" class="btn btn-login float-right" id="btn-ingresar">Ingresar</button>
                     </div>
+
+                    <div class="p-3 text-danger bg-primary-subtle rounded-3 validacion-div" id="div-mensaje-validacion">
+                        @isset($mensaje)
+                        {{ $mensaje }}
+                    @else
+                       
+                    @endisset
+                      </div>
 
                 </form>
 
+             
+
                 <div class="copy-text"> Gestión de lotes <i class="fa fa-heart"></i> BeizaNetFlow</div>
+
             </div>
             <div class="col-md-8 banner-sec">
                 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
@@ -81,3 +92,6 @@
             </div>
         </div>
 </section>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="./scripts/login.js"></script>

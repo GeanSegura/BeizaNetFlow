@@ -3,6 +3,7 @@ var desactivar = JSON.parse(document.getElementById('app').getAttribute('data-de
 document.getElementById('laboratorio').addEventListener('input', function () {
 
     var articulosList1 = document.getElementById('productoDataList');
+    articulosList1.value= '';
     articulosList1.innerHTML = ''; // Limpiar el datalist de artículos
     var articulosList = document.getElementById('datalistOptionsProductos');
     articulosList.innerHTML = ''; // Limpiar el datalist de artículos
@@ -182,6 +183,7 @@ function actualizarTabla(data) {
             </tr>
         `;
         tabla.insertAdjacentHTML('beforeend', fila);
+        ocultarLoader();
 
     });
 
@@ -389,7 +391,7 @@ function descargarArchivo(loteId) {
 // FIN DESCARGAR ARCHIVO
 // inicio eliminar archivo
 
-// inicio agregar lote
+// inicio eliminar archivo
 function eliminarArchivo(loteId) {
    
     axios.delete(`/EliminarArchivoAWS/${loteId}`)
@@ -405,8 +407,9 @@ function eliminarArchivo(loteId) {
     });
 }
 
-// Fin agregar lote
+// Fin eliminar archivo
 
+// inicio agregar lote
 document.getElementById('button-agregar').addEventListener('click', function () {
     const loteId = document.getElementById('loteId').value;
     const almacen = document.getElementById('almacen').value;
@@ -419,13 +422,12 @@ document.getElementById('button-agregar').addEventListener('click', function () 
         articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
     }
 
-
     if (!loteId || !almacen || !fechaCreacion) {
         alert('Por favor, complete todos los campos.');
         return;
     }
 
-    document.getElementById('overlay').style.display = 'flex';
+  mostrarLoader();
 
     axios.post('/AgregarObtenerLote', {
         lote_id: loteId,
@@ -458,7 +460,7 @@ document.getElementById('button-agregar').addEventListener('click', function () 
         })
         .finally(() => {
             // Código que se ejecuta siempre
-            document.getElementById('overlay').style.display = 'none';
+
         });
 
 
@@ -477,7 +479,7 @@ document.getElementById('button-agregar').addEventListener('click', function () 
             })
             .finally(() => {
                 // Código que se ejecuta siempre
-                document.getElementById('overlay').style.display = 'none';
+        
             });
            
 
@@ -486,6 +488,8 @@ document.getElementById('button-agregar').addEventListener('click', function () 
     }
 
 });
+
+// fin agregar lote
 
 // Fin agregar lote
 
