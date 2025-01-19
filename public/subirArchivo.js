@@ -108,7 +108,7 @@ document.getElementById('button-buscar').addEventListener('click', function () {
     if (articuloSeleccionado) {
         articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
 
-        document.getElementById('overlay').style.display = 'flex';
+        mostrarLoader();
         // Llamada AJAX para obtener los datos del artículo
         axios.get(`/GestionLotesArticulo/${articuloId}`)
         
@@ -119,9 +119,8 @@ document.getElementById('button-buscar').addEventListener('click', function () {
             .catch(error => {
                 console.error('Error al buscar el artículo:', error);
             })
-            .finally(() => {
-                // Código que se ejecuta siempre
-                document.getElementById('overlay').style.display = 'none';
+            .finally(() => {   
+                ocultarLoader();
             });
 
 
@@ -138,6 +137,8 @@ function actualizarTabla(data) {
     // Limpiar la tabla antes de actualizarla
     const tabla = document.getElementById('lotTable');
     tabla.innerHTML = ''; // Limpiar tabla
+
+    mostrarLoader();
 
     data.forEach(lote => {
         // Comprobamos si 'is_archivo' está vacío o tiene un valor
@@ -192,7 +193,7 @@ function actualizarTabla(data) {
 
 function manejarPaginacion(paginacion) {
 
-
+    mostrarLoader();
     const paginationContainer = document.getElementById('pagination');
     paginationContainer.innerHTML = ''; // Limpiar el contenedor de paginación
 
@@ -233,12 +234,14 @@ function manejarPaginacion(paginacion) {
 
     paginationContainer.appendChild(ul);
 
+    ocultarLoader();
+
 
 }
 
 function cambiarPagina(page) {
     // Simulación de solicitud de datos para la nueva página
-    document.getElementById('overlay').style.display = 'flex';
+mostrarLoader();
     axios.get(`/GestionLotesArticulo/${articuloId}?page=${page}`)
         .then(response => {
             actualizarTabla(response.data.data);
@@ -248,8 +251,7 @@ function cambiarPagina(page) {
             console.error('Error al cambiar de página:', error);
         })
         .finally(() => {
-            // Código que se ejecuta siempre
-            document.getElementById('overlay').style.display = 'none';
+ocultarLoader();
         });
 
 }
@@ -459,15 +461,17 @@ document.getElementById('button-agregar').addEventListener('click', function () 
             document.getElementById('mensajeRespuesta').classList.add('text-danger');
         })
         .finally(() => {
-            // Código que se ejecuta siempre
+            ocultarLoader
 
         });
 
 
+        console.log(articuloSeleccionado);
     if (articuloSeleccionado) {
+
         articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
 
-        document.getElementById('overlay').style.display = 'flex';
+        mostrarLoader();
         // Llamada AJAX para obtener los datos del artículo
         axios.get(`/GestionLotesArticulo/${articuloId}`)
             .then(response => {
@@ -479,7 +483,7 @@ document.getElementById('button-agregar').addEventListener('click', function () 
             })
             .finally(() => {
                 // Código que se ejecuta siempre
-        
+                ocultarLoader
             });
            
 
