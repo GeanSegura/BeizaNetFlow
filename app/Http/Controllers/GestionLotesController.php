@@ -52,7 +52,6 @@ class GestionLotesController extends Controller
 
     function agregarObtenerLote(Request $request)
     {
-      
         try {
             // Llamada al procedimiento almacenado o inserción directa
            
@@ -67,7 +66,9 @@ class GestionLotesController extends Controller
                 return response()->json(['mensaje' => '1']);
 
             } else {
-                return response()->json(['mensaje' => '0']);
+                return response()->json(['mensaje' => '0',
+                'articulo' => $result[0]->articulo,
+                'laboratorio' => $result[0]->laboratorio]); // Usa null si no está definido]);
             }
         } catch (\Exception $e) {
             return response()->json(['error' => $e], 500);

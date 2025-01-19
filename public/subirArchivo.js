@@ -21,8 +21,7 @@ document.getElementById('laboratorio').addEventListener('input', function () {
     if (laboratorioId) {
         // Establecer el valor del input oculto con el laboratorio_id
         document.getElementById('laboratorio_id').value = laboratorioId;
-        document.getElementById('overlay').style.display = 'flex';
-
+        mostrarLoader()
         // Realizar la solicitud para obtener los artículos de ese laboratorio usando Axios
         axios.get(`/GestionLotesLaboratorio/${laboratorioId}`)
             .then(function (response) {
@@ -39,13 +38,12 @@ document.getElementById('laboratorio').addEventListener('input', function () {
                 });
 
                 // Ocultar el loader una vez que los datos han sido cargados
-                document.getElementById('overlay').style.display = 'none';
+                ocultarLoader();
             })
             .catch(function (error) {
                 console.error('Error al obtener los artículos:', error);
 
                 // Ocultar el loader en caso de error
-                document.getElementById('overlay').style.display = 'none';
             });
     }
 });
@@ -108,16 +106,21 @@ document.getElementById('button-buscar').addEventListener('click', function () {
 
     if (articuloSeleccionado) {
         articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
-        document.getElementById('overlay').style.display = 'flex';
 
+        document.getElementById('overlay').style.display = 'flex';
         // Llamada AJAX para obtener los datos del artículo
         axios.get(`/GestionLotesArticulo/${articuloId}`)
+        
             .then(response => {
                 actualizarTabla(response.data.data); // Acceder a los datos paginados
                 manejarPaginacion(response.data); // Manejar la paginación
             })
             .catch(error => {
                 console.error('Error al buscar el artículo:', error);
+            })
+            .finally(() => {
+                // Código que se ejecuta siempre
+                document.getElementById('overlay').style.display = 'none';
             });
 
 
@@ -158,7 +161,7 @@ function actualizarTabla(data) {
                         Descargar Archivo
                     </button>
 
-                    <button class="btn btn-danger btn-sm me-2 eliminar-archivo" data-lote-id="${lote.lote_id}"
+                    <button class="btn btn-danger btn-sm me-2 eliminar-archivo"  onclick="eliminarArchivo('${lote.lote_id}')"
                         ${isArchivoVacio ? 'disabled' : ''} ${desactivar ? 'hidden' : ''}>
                         Eliminar Archivo
                     </button>
@@ -182,7 +185,6 @@ function actualizarTabla(data) {
 
     });
 
-    document.getElementById('overlay').style.display = 'none';
 }
 
 
@@ -228,7 +230,7 @@ function manejarPaginacion(paginacion) {
     ul.appendChild(nextItem);
 
     paginationContainer.appendChild(ul);
-    document.getElementById('overlay').style.display = 'none';
+
 
 }
 
@@ -353,10 +355,21 @@ function subirArchivo(loteId) {
 
 // INICIO DESCARGAR ARCHIVO
 function descargarArchivo(loteId) {
-    // Realiza la solicitud al backend para obtener el archivo
-
     axios.get(`/DescargarArchivo/${loteId}`, { responseType: 'blob' })
         .then(response => {
+            // Obtener el nombre del archivo desde los headers
+            const contentDisposition = response.headers['content-disposition'];
+            let fileName = 'archivo_desconocido'; // Nombre por defecto
+
+            if (contentDisposition && contentDisposition.includes('filename=')) {
+                // Extraer el nombre del archivo del header
+                const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+                if (fileNameMatch.length > 1) {
+                    fileName = fileNameMatch[1];
+                }
+            }
+
+            // Crear un objeto URL para el blob
             const url = URL.createObjectURL(response.data);
             const a = document.createElement('a');
             a.href = url;
@@ -364,16 +377,35 @@ function descargarArchivo(loteId) {
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+
+            // Liberar el objeto URL
+            URL.revokeObjectURL(url);
         })
         .catch(error => {
             console.error('Error al descargar el archivo:', error);
             alert('No se pudo descargar el archivo.');
         });
 }
-
 // FIN DESCARGAR ARCHIVO
+// inicio eliminar archivo
 
 // inicio agregar lote
+function eliminarArchivo(loteId) {
+   
+    axios.delete(`/EliminarArchivoAWS/${loteId}`)
+    .then(response => {
+        alert(response.data.mensaje);
+    })
+    .catch(error => {
+        console.error('Error al buscar el artículo:', error);
+    })
+    .finally(() => {
+        // Código que se ejecuta siempre
+        document.getElementById('overlay').style.display = 'none';
+    });
+}
+
+// Fin agregar lote
 
 document.getElementById('button-agregar').addEventListener('click', function () {
     const loteId = document.getElementById('loteId').value;
@@ -403,12 +435,14 @@ document.getElementById('button-agregar').addEventListener('click', function () 
     })
         .then(response => {
             var rptaS = response.data.mensaje;
+            var mjsArticulo = response.data.articulo;
+            var mjsLaboratario = response.data.laboratorio;
            
             if (  rptaS == '1'  ){
             document.getElementById('mensajeRespuesta').textContent = 'El Lote ha sido agregado exitosamente.';
             document.getElementById('mensajeRespuesta').classList.add('text-success');
             }else{
-            document.getElementById('mensajeRespuesta').textContent = 'El lote ya existe.';
+            document.getElementById('mensajeRespuesta').textContent = 'El lote ya existe' + ' Articulo: '+ mjsArticulo + ' Laboratorio:' + mjsLaboratario ;
             document.getElementById('mensajeRespuesta').classList.add('text-danger');
             }
 
@@ -479,8 +513,8 @@ function eliminarLote(loteId) {
         })
         .finally(() => {
             // Ocultar loader siempre
-            document.getElementById('overlay').style.display = 'flex';
         });
+
 
     if (articuloSeleccionado) {
         articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
@@ -510,5 +544,18 @@ function eliminarLote(loteId) {
 
 }
 
+function mostrarLoader() {
+    // Muestra el overlay
+    document.getElementById('overlay').style.display = 'flex';
+    // Agrega la clase 'loading' al body para bloquear interacciones
+    document.body.classList.add('loading');
+}
+
+function ocultarLoader() {
+    // Oculta el overlay
+    document.getElementById('overlay').style.display = 'none';
+    // Remueve la clase 'loading' del body para habilitar interacciones
+    document.body.classList.remove('loading');
+}
 // Fin eliminar lote
 

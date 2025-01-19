@@ -8,14 +8,13 @@ use Illuminate\Support\Facades\DB;
 class RegistrarController extends Controller
 {
      // Insertar los datos recibidos en la base de datos
-     public function registrarUsuario(Request $request)
+     public function insertarUsuario(Request $request)
     {
         // Insertar los datos recibidos en la base de datos
-        $usuario = $request->input('usuario');
-        $correo = $request->input('correo');
-        $contrasena = $request->input('contrasena'); // Encriptar la contraseña
+        $usuario = $request->input('usuario_p');
+        $correo = $request->input('correo_p');
+        $contrasena = $request->input('contrasena_p'); // Encriptar la contraseña
         // $contrasena = bcrypt($request->input('contrasena')); // Encriptar la contraseña
-
         try {
             // Llamada al procedimiento almacenado o inserción directa
            

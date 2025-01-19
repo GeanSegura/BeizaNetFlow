@@ -5,6 +5,7 @@ use App\Http\Controllers\SubirArchivoController;
 use App\Http\Controllers\ArchivoMostrarController;
 use App\Http\Controllers\DescargarArchivoController;
 use App\Http\Controllers\AutenticacionController;
+use App\Http\Controllers\EliminarArchivoBucketController;
 use App\Http\Controllers\GestionLotesController;
 use App\Http\Controllers\RegistrarController;
 
@@ -39,7 +40,9 @@ Route::match(['get', 'delete'], '/EliminarLote/{lote_id}', [GestionLotesControll
 Route::post('/Subir', [SubirArchivoController::class, 'Guardar'])->name('archivo.cargar');
 Route::get('/VerArchivo/{loteId}', [ArchivoMostrarController::class, 'mostrarArchivo'])->name('archivo.mostrar');
 Route::get('/DescargarArchivo/{loteId}', [DescargarArchivoController::class, 'descargarArchivo'])->name('descargar.archivo');
-Route::match(['post', 'get'],'/registrar-usuario', [RegistrarController::class, 'registrarUsuario']);
+Route::match(['post', 'get'],'/RegistrarUsuario', [RegistrarController::class, 'insertarUsuario']);
+Route::match(['delete', 'get'],'/EliminarArchivoAWS/{loteId}', [EliminarArchivoBucketController::class, 'eliminarArchivoAWS']);
+
 
 
 
