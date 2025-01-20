@@ -99,13 +99,13 @@
 
         <div class="agregar-lote-div">
 
-            <div class="input-group mb-3" {{ $desactivar ? 'hidden' : '' }}>
+            <div id="agregar-lote-div" class="input-group mb-3" {{ $desactivar ? 'hidden' : '' }}>
                 <span class="input-group-text" id="inputGroup-sizing-default">ID Lote</span>
                 <input type="text" class="form-control" aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default" id="loteId" disabled>
             </div>
 
-            <div class="input-group mb-3" {{ $desactivar ? 'hidden' : '' }}>
+            <div id="agregar-almacen-div" class="input-group mb-3" {{ $desactivar ? 'hidden' : '' }}>
                 <span class="input-group-text" id="inputGroup-sizing-default">Almacen</span>
                 <input type="text" class="form-control" aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default" id="almacen" list="datalistOptionsTipoAlmacen" disabled>
@@ -117,7 +117,7 @@
 
             </div>
 
-            <div class="input-group mb-3" {{ $desactivar ? 'hidden' : '' }}>
+            <div id="agregar-fecha-div" class="input-group mb-3" {{ $desactivar ? 'hidden' : '' }}>
                 <span class="input-group-text" id="inputGroup-sizing-default">Fecha de creación</span>
                 <input type="date" class="form-control" aria-label="Sizing example input"
                     aria-describedby="inputGroup-sizing-default" id="fechaCreacion" disabled>

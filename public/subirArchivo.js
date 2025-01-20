@@ -66,6 +66,16 @@ document.querySelectorAll('[data-bs-target="#uploadModal"]').forEach(button => {
 document.getElementById('button-limpiar').addEventListener('click', function (e) {
     e.preventDefault();
 
+    var buttonAgregar = document.getElementById('button-agregar');
+    var iptLote = document.getElementById('loteId');
+    var iptAlmacen = document.getElementById('almacen');
+    var iptFecha = document.getElementById('fechaCreacion');
+
+    buttonAgregar.disabled = true;
+    iptLote.disabled = true;
+    iptAlmacen.disabled = true;
+    iptFecha.disabled = true;
+
     var articulosList1 = document.getElementById('productoDataList');
     articulosList1.innerHTML = ''; // Limpiar el datalist de artículos
     articulosList1.value = '';

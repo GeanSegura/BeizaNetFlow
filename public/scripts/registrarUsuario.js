@@ -58,6 +58,7 @@ document.getElementById("registerBtn").addEventListener("click", function (e) {
         contrasena_p: contrasena
     })
     .then(response => {
+        document.getElementById("registerBtn").disabled = true;
         alert("Se registro correctamenet") // Usuario registrado correctamente
     })
     .catch(error => {
