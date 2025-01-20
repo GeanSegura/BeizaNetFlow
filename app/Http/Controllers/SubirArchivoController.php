@@ -87,7 +87,7 @@ class SubirArchivoController extends Controller
             // Verificar la respuesta
             if ($response->getStatusCode() == 200) {
                 return response()->json([
-                    'message' => 'Archivo subido exitosamente a S3',
+                    'mensaje' => 'Archivo subido exitosamente a S3',
                     'file' => $fileName,
                     'path' => $url,
                 ]);

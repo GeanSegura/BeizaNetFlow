@@ -3,7 +3,7 @@ var desactivar = JSON.parse(document.getElementById('app').getAttribute('data-de
 document.getElementById('laboratorio').addEventListener('input', function () {
 
     var articulosList1 = document.getElementById('productoDataList');
-    articulosList1.value= '';
+    articulosList1.value = '';
     articulosList1.innerHTML = ''; // Limpiar el datalist de artículos
     var articulosList = document.getElementById('datalistOptionsProductos');
     articulosList.innerHTML = ''; // Limpiar el datalist de artículos
@@ -100,7 +100,7 @@ document.getElementById('button-buscar').addEventListener('click', function () {
 
     buttonAgregar.disabled = false;
     iptLote.disabled = false;
-    iptAlmacen.disabled = false;    
+    iptAlmacen.disabled = false;
     iptFecha.disabled = false;
 
 
@@ -111,7 +111,7 @@ document.getElementById('button-buscar').addEventListener('click', function () {
         mostrarLoader();
         // Llamada AJAX para obtener los datos del artículo
         axios.get(`/GestionLotesArticulo/${articuloId}`)
-        
+
             .then(response => {
                 actualizarTabla(response.data.data); // Acceder a los datos paginados
                 manejarPaginacion(response.data); // Manejar la paginación
@@ -119,7 +119,7 @@ document.getElementById('button-buscar').addEventListener('click', function () {
             .catch(error => {
                 console.error('Error al buscar el artículo:', error);
             })
-            .finally(() => {   
+            .finally(() => {
                 ocultarLoader();
             });
 
@@ -163,7 +163,7 @@ function actualizarTabla(data) {
                         Descargar Archivo
                     </button>
 
-                    <button class="btn btn-danger btn-sm me-2 eliminar-archivo"  onclick="eliminarArchivo('${lote.lote_id}')"
+                    <button id="${lote.lote_id}" class="btn btn-danger btn-sm me-2 eliminar-archivo"  onclick="eliminarArchivo('${lote.lote_id}')"
                         ${isArchivoVacio ? 'disabled' : ''} ${desactivar ? 'hidden' : ''}>
                         Eliminar Archivo
                     </button>
@@ -241,7 +241,7 @@ function manejarPaginacion(paginacion) {
 
 function cambiarPagina(page) {
     // Simulación de solicitud de datos para la nueva página
-mostrarLoader();
+    mostrarLoader();
     axios.get(`/GestionLotesArticulo/${articuloId}?page=${page}`)
         .then(response => {
             actualizarTabla(response.data.data);
@@ -251,15 +251,14 @@ mostrarLoader();
             console.error('Error al cambiar de página:', error);
         })
         .finally(() => {
-ocultarLoader();
+            ocultarLoader();
         });
 
 }
 
 // Boton mostrar archivo
 function mostrarArchivo(loteId) {
-
-
+    mostrarLoader
     axios.get(`/VerArchivo/${loteId}`, { responseType: 'blob' })
         .then(response => {
 
@@ -324,6 +323,9 @@ function mostrarArchivo(loteId) {
         .catch(error => {
             console.error('Error al obtener el archivo:', error);
             alert('No se pudo cargar el archivo.');
+        })
+        .finally(()=>{
+             ocultarLoader(); // Ocultar el loader
         });
 }
 // INICIO BOTONES AWS
@@ -335,12 +337,23 @@ function subirArchivo(loteId) {
         e.preventDefault();
 
         const formData = new FormData(this);
-        formData.append('lote_id', loteId); // Agrega loteId al FormData
 
+        formData.append('lote_id', loteId); // Agrega loteId al FormData
+        mostrarLoader();
         axios.post('/Subir', formData)
             .then(response => {
-                alert(response.data.file);
+                alert(response.data.mensaje);
 
+                buscar()
+                    .then(() => {
+                        console.log('Datos obtenidos con éxito.');
+                    })
+                    .catch(error => {
+                        console.error('Error al obtener datos:', error);
+                    })
+                    .finally(() => {
+                        ocultarLoader
+                    });
                 // Cerrar el modal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('uploadModal'));
                 modal.hide();
@@ -352,7 +365,9 @@ function subirArchivo(loteId) {
                 console.error('Error al subir el archivo:', error);
                 alert('Hubo un problema al subir el archivo');
             });
+
     }, { once: true }); // Escuchar solo una vez para evitar múltiples manejadores
+
 }
 
 // fin boton subir archivo
@@ -394,21 +409,44 @@ function descargarArchivo(loteId) {
 // inicio eliminar archivo
 
 // inicio eliminar archivo
-function eliminarArchivo(loteId) {
-   
-    axios.delete(`/EliminarArchivoAWS/${loteId}`)
-    .then(response => {
-        alert(response.data.mensaje);
-    })
-    .catch(error => {
-        console.error('Error al buscar el artículo:', error);
-    })
-    .finally(() => {
-        // Código que se ejecuta siempre
-        document.getElementById('overlay').style.display = 'none';
-    });
-}
+async function eliminarArchivo(loteId) {
+    
+    document.getElementById(loteId).disabled = true;
 
+    try {
+        mostrarLoader(); // Mostrar el loader
+        axios.delete(`/EliminarArchivoAWS/${loteId}`)
+            .then(response => {
+
+                alert(response.data.mensaje); // Operación exitosa
+
+                buscar()
+                    .then(() => {
+                        console.log('Datos obtenidos con éxito.');
+                    })
+                    .catch(error => {
+                        console.error('Error al obtener datos:', error);
+                    })
+                    .finally(() => {
+                        ocultarLoader(); // Ocultar el loader
+                    });
+            })
+            .catch(error => {
+                console.error('Error al eliminar el archivo:', error);
+                alert('Ocurrió un error al intentar eliminar el archivo.'); // Manejo de error
+            })
+            .finally(() => {
+            });
+
+    } catch (error) {
+        console.error('Error al eliminar el archivo:', error);
+        alert('Ocurrió un error al intentar eliminar el archivo.');
+        ocultarLoader(); // Ocultar el loader
+    } finally {
+        ocultarLoader(); // Ocultar el loader
+        document.getElementById(loteId).disabled = false;
+    }
+}
 // Fin eliminar archivo
 
 // inicio agregar lote
@@ -429,7 +467,7 @@ document.getElementById('button-agregar').addEventListener('click', function () 
         return;
     }
 
-  mostrarLoader();
+    mostrarLoader();
 
     axios.post('/AgregarObtenerLote', {
         lote_id: loteId,
@@ -441,13 +479,13 @@ document.getElementById('button-agregar').addEventListener('click', function () 
             var rptaS = response.data.mensaje;
             var mjsArticulo = response.data.articulo;
             var mjsLaboratario = response.data.laboratorio;
-           
-            if (  rptaS == '1'  ){
-            document.getElementById('mensajeRespuesta').textContent = 'El Lote ha sido agregado exitosamente.';
-            document.getElementById('mensajeRespuesta').classList.add('text-success');
-            }else{
-            document.getElementById('mensajeRespuesta').textContent = 'El lote ya existe' + ' Articulo: '+ mjsArticulo + ' Laboratorio:' + mjsLaboratario ;
-            document.getElementById('mensajeRespuesta').classList.add('text-danger');
+
+            if (rptaS == '1') {
+                document.getElementById('mensajeRespuesta').textContent = 'El Lote ha sido agregado exitosamente.';
+                document.getElementById('mensajeRespuesta').classList.add('text-success');
+            } else {
+                document.getElementById('mensajeRespuesta').textContent = 'El lote ya existe' + ' Articulo: ' + mjsArticulo + ' Laboratorio:' + mjsLaboratario;
+                document.getElementById('mensajeRespuesta').classList.add('text-danger');
             }
 
             // Limpiar los campos
@@ -466,7 +504,6 @@ document.getElementById('button-agregar').addEventListener('click', function () 
         });
 
 
-        console.log(articuloSeleccionado);
     if (articuloSeleccionado) {
 
         articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
@@ -485,7 +522,7 @@ document.getElementById('button-agregar').addEventListener('click', function () 
                 // Código que se ejecuta siempre
                 ocultarLoader
             });
-           
+
 
     } else {
         alert('Seleccione un artículo válido.');
@@ -495,12 +532,10 @@ document.getElementById('button-agregar').addEventListener('click', function () 
 
 // fin agregar lote
 
-// Fin agregar lote
-
 // Inicio eliminar lote
 function eliminarLote(loteId) {
     var articuloSeleccionado = document.querySelector('#datalistOptionsProductos option[value="' + document.getElementById('productoDataList').value + '"]');
-    
+
     if (!loteId) {
         alert('ID del lote no válido.');
         return;
@@ -523,11 +558,6 @@ function eliminarLote(loteId) {
             // Ocultar loader siempre
         });
 
-
-    if (articuloSeleccionado) {
-        articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
-    }
-
     if (articuloSeleccionado) {
         articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
 
@@ -544,7 +574,7 @@ function eliminarLote(loteId) {
                 // Código que se ejecuta siempre
                 document.getElementById('overlay').style.display = 'none';
             });
-           
+
 
     } else {
         alert('Seleccione un artículo válido.');
@@ -566,4 +596,33 @@ function ocultarLoader() {
     document.body.classList.remove('loading');
 }
 // Fin eliminar lote
+
+async function buscar() {
+
+    var articuloSeleccionado = document.querySelector('#datalistOptionsProductos option[value="' + document.getElementById('productoDataList').value + '"]');
+    if (articuloSeleccionado) {
+        articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
+
+        mostrarLoader();
+        // Llamada AJAX para obtener los datos del artículo
+        axios.get(`/GestionLotesArticulo/${articuloId}`)
+
+            .then(response => {
+                actualizarTabla(response.data.data); // Acceder a los datos paginados
+                manejarPaginacion(response.data); // Manejar la paginación
+            })
+            .catch(error => {
+                console.error('Error al buscar el artículo:', error);
+            })
+            .finally(() => {
+                ocultarLoader();
+            });
+
+
+
+    } else {
+        alert('Seleccione un artículo válido.');
+    }
+
+}
 

@@ -60,7 +60,7 @@
 
                 <input type="hidden" id="laboratorio_id" name="laboratorio_id">
 
-                <div class="input-group mb-3">
+                <div class="input-group mb-3"  >
                     <span class="input-group-text" id="inputGroup-sizing-default">Laboratorio</span>
                     <input class="form-control" list="datalistOptions" name="laboratorio" id="laboratorio"
                         placeholder="Escriba el nombre del laboratorio">
@@ -130,7 +130,8 @@
 
         </div>
 
-        <div class="buscar-lote-div" {{ $desactivar ? 'hidden' : '' }}>
+        {{-- <div class="buscar-lote-div" {{ $desactivar ? 'hidden' : '' }}> --}}
+            <div class="buscar-lote-div" hidden>
             <div class="input-group mb-3">
                 <span class="input-group-text" id="inputGroup-sizing-default">Buscar lote</span>
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">

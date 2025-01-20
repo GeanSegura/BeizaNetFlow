@@ -39,12 +39,12 @@ class EliminarArchivoBucketController extends Controller
 
                 return response()->json([
                     'success' => true,
-                    'message' => 'Archivo eliminado exitosamente.',
+                    'mensaje' => 'Archivo eliminado exitosamente.',
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'error' => 'La respuesta del servidor no fue exitosa. Código de estado: ' . $response->getStatusCode(),
+                    'error' => 'La respuesta del servidor no fue exitosa. Código de estado: ' . $response->getStatusCode()
                 ], 500);
             }
         } catch (\Exception $e) {
