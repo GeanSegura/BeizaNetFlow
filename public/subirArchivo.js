@@ -455,13 +455,6 @@ document.getElementById('button-agregar').addEventListener('click', function () 
     const almacen = document.getElementById('almacen').value;
     const fechaCreacion = document.getElementById('fechaCreacion').value;
 
-   
-
-
-    if (articuloSeleccionado) {
-        articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
-    }
-
     if (!loteId || !almacen || !fechaCreacion) {
         alert('Por favor, complete todos los campos.');
         return;
