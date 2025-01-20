@@ -455,7 +455,7 @@ document.getElementById('button-agregar').addEventListener('click', function () 
     const almacen = document.getElementById('almacen').value;
     const fechaCreacion = document.getElementById('fechaCreacion').value;
 
-    var articuloSeleccionado = document.querySelector('#datalistOptionsProductos option[value="' + document.getElementById('productoDataList').value + '"]');
+   
 
 
     if (articuloSeleccionado) {
@@ -492,6 +492,18 @@ document.getElementById('button-agregar').addEventListener('click', function () 
             document.getElementById('loteId').value = '';
             document.getElementById('almacen').value = '';
             document.getElementById('fechaCreacion').value = '';
+
+            buscar()
+            .then(() => {
+                console.log('Datos obtenidos con éxito.');
+            })
+            .catch(error => {
+                console.error('Error al obtener datos:', error);
+            })
+            .finally(() => {
+                ocultarLoader(); // Ocultar el loader
+            });
+
         })
         .catch(error => {
             console.error('Error al agregar el lote:', error);
@@ -503,38 +515,13 @@ document.getElementById('button-agregar').addEventListener('click', function () 
 
         });
 
-
-    if (articuloSeleccionado) {
-
-        articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
-
-        mostrarLoader();
-        // Llamada AJAX para obtener los datos del artículo
-        axios.get(`/GestionLotesArticulo/${articuloId}`)
-            .then(response => {
-                actualizarTabla(response.data.data); // Acceder a los datos paginados
-                manejarPaginacion(response.data); // Manejar la paginación
-            })
-            .catch(error => {
-                console.error('Error al buscar el artículo:', error);
-            })
-            .finally(() => {
-                // Código que se ejecuta siempre
-                ocultarLoader
-            });
-
-
-    } else {
-        alert('Seleccione un artículo válido.');
-    }
-
 });
 
 // fin agregar lote
 
 // Inicio eliminar lote
 function eliminarLote(loteId) {
-    var articuloSeleccionado = document.querySelector('#datalistOptionsProductos option[value="' + document.getElementById('productoDataList').value + '"]');
+    
 
     if (!loteId) {
         alert('ID del lote no válido.');
@@ -549,6 +536,17 @@ function eliminarLote(loteId) {
             document.getElementById('mensajeRespuesta').textContent = response.data.mensaje;
             document.getElementById('mensajeRespuesta').classList.add('text-success');
 
+            buscar()
+            .then(() => {
+                console.log('Datos obtenidos con éxito.');
+            })
+            .catch(error => {
+                console.error('Error al obtener datos:', error);
+            })
+            .finally(() => {
+                ocultarLoader(); // Ocultar el loader
+            });
+
         })
         .catch(error => {
             console.error('Error al eliminar el lote:', error);
@@ -558,27 +556,7 @@ function eliminarLote(loteId) {
             // Ocultar loader siempre
         });
 
-    if (articuloSeleccionado) {
-        articuloId = articuloSeleccionado.getAttribute('data-articulo-id');
 
-        // Llamada AJAX para obtener los datos del artículo
-        axios.get(`/GestionLotesArticulo/${articuloId}`)
-            .then(response => {
-                actualizarTabla(response.data.data); // Acceder a los datos paginados
-                manejarPaginacion(response.data); // Manejar la paginación
-            })
-            .catch(error => {
-                console.error('Error al buscar el artículo:', error);
-            })
-            .finally(() => {
-                // Código que se ejecuta siempre
-                document.getElementById('overlay').style.display = 'none';
-            });
-
-
-    } else {
-        alert('Seleccione un artículo válido.');
-    }
 
 }
 
