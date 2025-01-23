@@ -124,3 +124,7 @@ body.loading {
     pointer-events: none; /* Bloquea interacciones */
     overflow: hidden; /* Opcional: Previene el scroll */
 }
+
+.producto-num-div{
+    width: 32%;
+}

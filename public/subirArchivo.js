@@ -190,6 +190,11 @@ function actualizarTabla(data) {
                     <button class="btn btn-danger btn-sm me-2 eliminar-lote" onclick="eliminarLote('${lote.lote_id}')" ${desactivar ? 'hidden' : ''}>
                         Eliminar lote
                     </button>
+
+                     <button class="btn btn-warning btn-sm me-2 eliminar-lote" onclick="limpiarLote()">
+                        Limpiar Resultados
+                    </button>
+
                 </td>
             </tr>
         `;
@@ -606,4 +611,44 @@ async function buscar() {
     }
 
 }
+
+//inicio limpiar lote
+function limpiarLote() {
+
+    var buttonAgregar = document.getElementById('button-agregar');
+    var iptLote = document.getElementById('loteId');
+    var iptAlmacen = document.getElementById('almacen');
+    var iptFecha = document.getElementById('fechaCreacion');
+    var iptLimpiarLote = document.getElementById('num-factura');
+
+    buttonAgregar.disabled = true;
+    iptLote.disabled = true;
+    iptAlmacen.disabled = true;
+    iptFecha.disabled = true;
+
+    var articulosList1 = document.getElementById('productoDataList');
+    articulosList1.innerHTML = ''; // Limpiar el datalist de artículos
+    articulosList1.value = '';
+
+    var articulosList = document.getElementById('datalistOptionsProductos');
+    articulosList.innerHTML = ''; // Limpiar el datalist de artículos
+
+    var inputLaboratorios = document.getElementById('laboratorio');
+    inputLaboratorios.value = '';
+
+    var tblBodyLotes = document.getElementById('lotTable');
+    tblBodyLotes.innerHTML = '';
+
+    iptLimpiarLote.value = '';
+
+    const paginationContainer = document.getElementById('pagination');
+    if (paginationContainer) {
+        paginationContainer.innerHTML = '';  // Elimina los botones de paginación
+    }
+
+
+}
+
+
+// fin limpiar lote
 

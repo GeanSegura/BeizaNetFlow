@@ -60,9 +60,11 @@ document.getElementById("registerBtn").addEventListener("click", function (e) {
     .then(response => {
         document.getElementById("registerBtn").disabled = true;
         alert("Se registro correctamenet") // Usuario registrado correctamente
+        window.location.href = "login";
     })
     .catch(error => {
         console.error(error.response.data.message); // Error al registrar el usuario
     });
     }
 });
+
