@@ -11,13 +11,14 @@ class AsitenteChatBotController extends Controller
 public function cargarChatBot(Request $request){
 
 
-   $msg = $request->input('msg_user');
 
-// Revisa si ya se saludó al usuario
+$msg = $request->input('msg_user');
+
+// Verifica si ya se saludó al usuario
 $yaSaludo = session('ya_saludo', false);
 
-// System prompt base
-$system_prompt = "<<<PROMPT
+// Construye el prompt del sistema base
+$system_prompt = <<<PROMPT
 Eres un asistente experto del sistema BeizaNet - Gestión de Lotes.
 
 🧠 Conocimiento actual:
@@ -49,13 +50,13 @@ Eres un asistente experto del sistema BeizaNet - Gestión de Lotes.
 
 🎯 Objetivo:
 Ayuda al usuario a registrar, buscar, modificar o consultar lotes de productos, archivos, documentos u operaciones. Proporciona respuestas claras, técnicas y útiles. Mantén un tono amable y profesional, y responde incluso si los mensajes están parafraseados o son breves.
-PROMPT";
+PROMPT;
 
-// Si aún no se ha saludado, añade la instrucción para pedir el nombre
+// Si aún no se ha saludado, añade esta instrucción al prompt
 if (!$yaSaludo) {
-    $system_prompt .= "\n\nAntes de comenzar, por favor pide amablemente el nombre del usuario. salúdalos como si ya los conocieras.";
+    $system_prompt .= "\n\nPrimero saluda al usuario como si ya lo conocieras y pídele amablemente su nombre antes de continuar con cualquier consulta.";
+    session(['ya_saludo' => true]); // Marca que ya se saludó
 }
-
 // Unir prompt e input
 $input = $system_prompt . "\nUsuario: " . $msg;
 
