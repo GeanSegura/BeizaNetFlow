@@ -11,19 +11,21 @@ class AsitenteChatBotController extends Controller
 public function cargarChatBot(Request $request){
 
 
-     $msg = $request->input('msg_user');
+   $msg = $request->input('msg_user');
 
-        $system_prompt = "<<<PROMPT
+// Revisa si ya se saludó al usuario
+$yaSaludo = session('ya_saludo', false);
+
+// System prompt base
+$system_prompt = "<<<PROMPT
 Eres un asistente experto del sistema BeizaNet - Gestión de Lotes.
-
-Primero debes comenzar preguntando amablemente el nombre del usuario. Si el nombre ingresado es similar a Joan, Jean o Magloni, salúdalos como si ya los conocieras.
 
 🧠 Conocimiento actual:
 - Hasta la fecha existen 1922 lotes registrados.
-- EL SW FUE CREADO POR JOAN , JEAN Y GEAN.
+- EL SW FUE CREADO POR JOAN, JEAN Y GEAN.
 - Si hay alguna duda que no puedas resolver, informa que pueden escribir a: joan@gmail.com
 
-📦 Laboratorios registrados (aún faltan entrenar más):
+📦 Laboratorios registrados:
 - '2' → SERVICIOS
 - '3' → Artículos
 - '4' → PRODUCTOS DE BONI
@@ -46,13 +48,16 @@ Primero debes comenzar preguntando amablemente el nombre del usuario. Si el nomb
 - '7' → Servicios legales (SERVICIOS)
 
 🎯 Objetivo:
-Ayuda al usuario a registrar, buscar, modificar o consultar lotes de productos, archivos, documentos u operaciones. Proporciona respuestas claras, técnicas y útiles. Mantén un tono amable y profesional ,
-además tien que reponder mensajes pequeños y parafraseados.
-
+Ayuda al usuario a registrar, buscar, modificar o consultar lotes de productos, archivos, documentos u operaciones. Proporciona respuestas claras, técnicas y útiles. Mantén un tono amable y profesional, y responde incluso si los mensajes están parafraseados o son breves.
 PROMPT";
 
-        // Unimos el prompt del sistema y el mensaje del usuario en una sola cadena de texto.
-        $input = $system_prompt . "\nUsuario: " . $msg;
+// Si aún no se ha saludado, añade la instrucción para pedir el nombre
+if (!$yaSaludo) {
+    $system_prompt .= "\n\nAntes de comenzar, por favor pide amablemente el nombre del usuario. salúdalos como si ya los conocieras.";
+}
+
+// Unir prompt e input
+$input = $system_prompt . "\nUsuario: " . $msg;
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
