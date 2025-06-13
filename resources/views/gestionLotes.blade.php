@@ -11,6 +11,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playwrite+PT+Guides&family=Playwrite+TZ:wght@100..400&family=Quicksand:wght@300..700&display=swap"
         rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
     <link rel="stylesheet" href="CSS/styles.css">
 
 
@@ -97,7 +99,7 @@
                     placeholder="Escriba el número de factura">
             </div>
         </div>
-        
+
 
         <div class="agregar-lote-div">
 
@@ -187,10 +189,43 @@
     </div>
     <div id="app" data-desactivar="{{ json_encode($desactivar) }}"></div>
 
+    {{-- button chat bot --}}
+    <button class="chat-toggle" onclick="toggleChat()">
+        <i class="fa-brands fa-android"></i>
+    </button>
+
+     <div class="chat-window" id="chatWindow">
+    <div class="chat-header">
+      <div class="title">
+                 <i class="fas fa-robot"></i>
+        <div>
+          <div><strong>Asistente Virtual BeizaNetBot</strong></div>
+          <small style="color: #6ee7b7">🟢 En línea</small>
+        </div>
+      </div>
+      <button onclick="toggleChat()" style="background:none;border:none;color:white;font-size:18px;">✖</button>
+    </div>
+
+    <div class="chat-messages" id="chatBox">
+      <div class="message bot">Hola, soy tu asistente de BeizaNet Gestión de Lotes. 👋
+Hasta la fecha hay 1922 lotes registrados .
+Si tienes alguna duda que no pueda responder, puedes escribir a joan@gmail.com.</div>
+    </div>
+
+    <div class="chat-input">
+      <input type="text" id="userInput" placeholder="Escribe tu mensaje..." onkeypress="if(event.key==='Enter') sendMessage()" />
+      <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+  </div>
+
+  {{-- fin chat bot --}}
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="./subirArchivo.js"></script>
+    <script src="./scripts/chat.js"></script>
+
 
 
 </body>

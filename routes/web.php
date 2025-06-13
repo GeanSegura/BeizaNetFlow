@@ -8,6 +8,7 @@ use App\Http\Controllers\AutenticacionController;
 use App\Http\Controllers\EliminarArchivoBucketController;
 use App\Http\Controllers\GestionLotesController;
 use App\Http\Controllers\RegistrarController;
+use App\Http\Controllers\AsitenteChatBotController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,7 @@ use App\Http\Controllers\RegistrarController;
 Route::get('/', function () {
     return view('login');
 });
+
 // Route::get('/login', [AutenticacionController::class, 'login'])->name('login');
 Route::match(['get', 'post'],'/login', [AutenticacionController::class, 'login'])->name('login');
 Route::match(['get', 'post'],'/registrarse', [AutenticacionController::class, 'registrar'])->name('registrar');
@@ -38,6 +40,7 @@ Route::match(['get', 'delete'], '/EliminarLote/{lote_id}', [GestionLotesControll
 
 
 Route::post('/Subir', [SubirArchivoController::class, 'Guardar'])->name('archivo.cargar');
+Route::match(['post', 'get'],'/asistenteChatBot', [AsitenteChatBotController::class, 'cargarChatBot']);
 Route::get('/VerArchivo/{loteId}', [ArchivoMostrarController::class, 'mostrarArchivo'])->name('archivo.mostrar');
 Route::get('/DescargarArchivo/{loteId}', [DescargarArchivoController::class, 'descargarArchivo'])->name('descargar.archivo');
 Route::match(['post', 'get'],'/RegistrarUsuario', [RegistrarController::class, 'insertarUsuario']);

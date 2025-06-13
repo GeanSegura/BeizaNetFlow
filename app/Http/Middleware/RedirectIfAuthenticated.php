@@ -27,9 +27,9 @@ class RedirectIfAuthenticated
             }
         }
 
-        if (app()->environment('production') && !$request->secure()) {
-            return redirect()->secure($request->getRequestUri());
-        }
+        // if (app()->environment('production') && !$request->secure()) {
+        //     return redirect()->secure($request->getRequestUri());
+        // }
     
         return $next($request);
     }

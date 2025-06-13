@@ -128,3 +128,115 @@ body.loading {
 .producto-num-div{
     width: 32%;
 }
+
+ .chat-toggle {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(to right, #3b82f6, #4ade81);
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+
+    .chat-toggle:hover {
+      transform: scale(1.1);
+    }
+
+       .chat-window {
+      position: fixed;
+      bottom: 100px;
+      right: 24px;
+      width: 380px;
+      max-height: 550px;
+      background: rgba(24, 24, 27, 0.95);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      color: white;
+      z-index: 998;
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      background: linear-gradient(to right, #1e293b, #0f172a);
+      border-bottom: 1px solid #334155;
+    }
+
+    .chat-header .title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .chat-header .title i {
+      background: linear-gradient(to right, #3b82f6, #9333ea);
+      padding: 10px;
+      border-radius: 50%;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      background: #1e1e2e;
+    }
+
+    .chat-input {
+      display: flex;
+      padding: 12px;
+      border-top: 1px solid #334155;
+      background: #0f172a;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      background:rgb(35 40 36);
+      color: white;
+    }
+
+    .chat-input button {
+      background: linear-gradient(to right, #3b82f6, #9333ea);
+      border: none;
+      color: white;
+      padding: 10px 16px;
+      margin-left: 8px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .message {
+      margin-bottom: 10px;
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      clear: both;
+      word-wrap: break-word;
+    }
+
+    .message.user {
+      background: #4ade80;
+      color: black;
+      margin-left: auto;
+    }
+
+    .message.bot {
+      background: #334155;
+    }
