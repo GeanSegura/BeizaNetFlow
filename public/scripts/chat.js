@@ -1,13 +1,18 @@
 
+const windowConfig = document.getElementById("configBtn");
+
 function toggleChat() {
   const chat = document.getElementById("chatWindow");
   const isOpen = chat.style.display === "flex";
+
+  windowConfig.style.display = "none";
 
   chat.style.display = isOpen ? "none" : "flex";
 
   // Limpiar mensajes si se cierra el chat
   if (isOpen) {
     clearMessages();
+      windowConfig.style.display = "block";
   }
 }
 
@@ -37,6 +42,7 @@ async function sendMessage() {
 function appendMessage(sender, text) {
   const box = document.getElementById("chatBox");
   const div = document.createElement("div");
+
   div.className = "message " + sender;
   div.innerText = text;
   box.appendChild(div);
@@ -53,3 +59,23 @@ Si tienes alguna duda que no pueda responder, puedes escribir a joan@gmail.com.`
 
   appendMessage("chatBox", saludo);
 }
+
+// ventana configuracion
+
+ const configBtn = document.getElementById("configBtn");
+  const configPanel = document.getElementById("configPanel");
+
+  configBtn.addEventListener("click", () => {
+    const visible = configPanel.style.display === "block";
+    configPanel.style.display = visible ? "none" : "block";
+  });
+
+  function guardarConfiguracion() {
+    const porcentaje = document.getElementById("porcentaje").value;
+    const operacion = document.querySelector('input[name="operacion"]:checked').value;
+    alert(`Configuración guardada:\nOperación: ${operacion}\nPorcentaje: ${porcentaje}%`);
+  }
+
+  function cerrarPanel() {
+    configPanel.style.display = "none";
+  }

@@ -9,6 +9,8 @@ use App\Http\Controllers\EliminarArchivoBucketController;
 use App\Http\Controllers\GestionLotesController;
 use App\Http\Controllers\RegistrarController;
 use App\Http\Controllers\AsitenteChatBotController;
+use App\Http\Controllers\ExcelImportController;
+use App\Http\Controllers\PrecioArticulosController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,14 +32,12 @@ Route::match(['get', 'post'],'/login', [AutenticacionController::class, 'login']
 Route::match(['get', 'post'],'/registrarse', [AutenticacionController::class, 'registrar'])->name('registrar');
 
 Route::get('/GestionLotes', [GestionLotesController::class, 'index'])->name('GestionLotes');
-
+Route::get('/PrecioArticulos', [PrecioArticulosController::class, 'index'])->name('PrecioArticulos');
 
 Route::get('/GestionLotesLaboratorio/{laboratorio_id}', [GestionLotesController::class, 'obtenerArticulos'])->name('GestionLotesLaboratorio');
 Route::get('/GestionLotesArticulo/{articulo_id}', [GestionLotesController::class, 'obtenerLotes'])->name('GestionLotesArticulo');
 Route::match(['get', 'post'], 'AgregarObtenerLote', [GestionLotesController::class, 'agregarObtenerLote']);
 Route::match(['get', 'delete'], '/EliminarLote/{lote_id}', [GestionLotesController::class, 'eliminarLote']);
-
-
 
 Route::post('/Subir', [SubirArchivoController::class, 'Guardar'])->name('archivo.cargar');
 Route::match(['post', 'get'],'/asistenteChatBot', [AsitenteChatBotController::class, 'cargarChatBot']);
@@ -45,6 +45,9 @@ Route::get('/VerArchivo/{loteId}', [ArchivoMostrarController::class, 'mostrarArc
 Route::get('/DescargarArchivo/{loteId}', [DescargarArchivoController::class, 'descargarArchivo'])->name('descargar.archivo');
 Route::match(['post', 'get'],'/RegistrarUsuario', [RegistrarController::class, 'insertarUsuario']);
 Route::match(['delete', 'get'],'/EliminarArchivoAWS/{loteId}', [EliminarArchivoBucketController::class, 'eliminarArchivoAWS']);
+Route::match(['post', 'get'],'/subir-excel', [ExcelImportController::class, 'subirExcel'])->name('subirExcel');
+
+
 
 
 
