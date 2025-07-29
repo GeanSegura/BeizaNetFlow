@@ -9,6 +9,7 @@
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.css" />
 
     <style>
         body {
@@ -102,6 +103,26 @@
             overflow-x: auto;
         }
 
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(255, 255, 255, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loader-size {
+            width: 160px;
+            height: 160px;
+            border-width: 12px;
+            /* más grueso */
+        }
+
         @media (max-width: 600px) {
             body {
                 font-size: 1.05rem;
@@ -168,43 +189,92 @@
         </div>
 
         <!-- Modal configuración -->
-        <div id="modal-config">
-            <div class="d-flex justify-content-between mb-3">
-                <h5>Configuración</h5>
-                <button class="btn btn-danger btn-sm" onclick="toggleModal()">✖</button>
-            </div>
 
-            <div class="mb-3">
-                <label class="form-label">Subir archivo Excel:</label>
-                <input type="file" class="form-control" accept=".xlsx, .xls" id="excel-upload"
-                    onchange="mostrarTabla()">
-            </div>
 
-            <div id="tabla-resultados" class="mt-3 d-none">
-                <h5>Laboratorios cargados</h5>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead class="table-primary">
-                            <tr>
-                                <th>Laboratorio</th>
-                                <th>Porcentaje %</th>
-                                <th>Tipo</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-body"></tbody>
-                    </table>
+        <form method="POST" action="{{ route('subirExcel') }}" enctype="multipart/form-data"
+            onsubmit="return validarYMostrarLoader()">
+            @csrf
+            <div id="modal-config">
+                <div class="d-flex justify-content-between mb-3">
+                    <h5>Configuración</h5>
+                    <button class="btn btn-danger btn-sm" type="button" onclick="toggleModal()">✖</button>
+
                 </div>
-            </div>
 
-            <button class="btn btn-primary w-100 mt-3" onclick="guardarConfiguracion()">Guardar Cambios</button>
+                <div class="mb-3">
+                    <label class="form-label">Subir archivo Excel:</label>
+                    <input type="file" name="archivo_excel" class="form-control" accept=".xlsx, .xls"
+                        id="excel-upload">
+                </div>
+                <button type="submit" class="btn btn-success">Cargar Excel</button>
+
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+                    </div>
+                @endif
+
+        </form>
+
+        @if (session('abrir_modal'))
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    toggleModal(); // Esta función debe estar ya definida
+                });
+            </script>
+        @endif
+
+        <div id="loader" class="loader-overlay" style="display: none;">
+            <div class="spinner-border text-primary loader-size" role="status"></div>
         </div>
+
+        <div class="mb-3">
+            <label for="busqueda">Buscar laboratorio:</label>
+            <div class="input-group">
+                <input type="text" id="busqueda" class="form-control" placeholder="Ej: Caferma, Química, etc.">
+                <button class="btn btn-primary" type="button" id="btnBuscar">Buscar</button>
+            </div>
+        </div>
+
+        <!-- Tabla de resultados -->
+        <div id="tabla-resultados" class="mt-3">
+            <h5>Laboratorios encontrados</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Laboratorio</th>
+                            <th>Porcentaje %</th>
+                            <th>Operación</th>
+                        </tr>
+                    </thead>
+
+
+                    <tbody id="tabla-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Mensaje si no hay resultados -->
+        <div id="mensaje-vacio" class="alert alert-warning d-none mt-3">
+            No se encontraron laboratorios.
+        </div>
+
+        <button id="btnGuardar" class="btn btn-primary w-100 mt-3" type="button" >Guardar Cambios</button>
+    </div>
     </div>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const RUTA_SUBIR_EXCEL = "{{ route('subirExcel') }}";
+        const RUTA_LISTA_LABORATORIOS = "{{ route('listaLaboratoriosExcel') }}";
+        const RUTA_GUARDAR_CONFIGURACION = "{{ route('guardarConfiguracion') }}";
+
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./scripts/CargarExcel/cargarExcel.js?v={{ time() }}"></script>
 
 

@@ -3,11 +3,6 @@ function toggleModal() {
     modal.style.display = modal.style.display === 'none' || modal.style.display === '' ? 'block' : 'none';
 }
 
-function guardarConfiguracion() {
-    alert("Configuración guardada");
-    toggleModal();
-}
-
 function mostrarTabla() {
     const tablaBody = document.getElementById("tabla-body");
     tablaBody.innerHTML = `
@@ -68,26 +63,180 @@ document.getElementById("user-input").addEventListener("keydown", function (even
     }
 });
 
-// FUNCION SUBIR EXCEL
-document.getElementById("excel-upload").addEventListener("change", function () {
-    const form = document.getElementById("formExcel");
-    const formData = new FormData(form);
+function validarYMostrarLoader() {
+    const inputArchivo = document.getElementById('excel-upload');
 
-    fetch("/subir-excel", {
-        method: "POST",
-        headers: {
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content")
-        },
-        body: formData
-    })
-        .then(response => response.json())
-        .then(data => {
-            alert("Archivo procesado correctamente");
-            console.log(data);
-            // Aquí puedes actualizar tu tabla, etc.
-        })
-        .catch(error => {
-            alert("Ocurrió un error al subir el archivo.");
-            console.error(error);
-        });
+    if (!inputArchivo.value) {
+        alert('Por favor, seleccione un archivo Excel antes de enviar.');
+        return false; // Detiene el envío del formulario
+    }
+
+    // Aquí puedes mostrar el loader si tienes alguna función para eso
+    mostrarLoader();
+
+    return true; // Permite enviar el formulario
+}
+
+// LOADER
+function mostrarLoader() {
+    document.getElementById('loader').style.display = 'flex';
+}
+
+function ocultarLoader() {
+    document.getElementById('loader').style.display = 'none';
+}
+// FIN LOADER
+
+const inputBusqueda = document.getElementById('busqueda');
+const awesomplete = new Awesomplete(inputBusqueda, {
+    minChars: 1,
+    maxItems: 15,
+    autoFirst: true
 });
+
+// 🌀 Cargar sugerencias para el autocompletado una sola vez
+let cacheLaboratorios = [];
+
+function cargarSugerencias() {
+    if (cacheLaboratorios.length > 0) {
+        const lista = cacheLaboratorios
+            .map(l => l.laboratorio)
+            .filter((v, i, a) => v && a.indexOf(v) === i);
+        awesomplete.list = lista;
+        return;
+    }
+
+    mostrarLoader();
+
+    $.ajax({
+        url: RUTA_LISTA_LABORATORIOS,
+        method: "GET",
+        success: function (data) {
+            cacheLaboratorios = data;
+
+            const lista = data
+                .map(l => l.laboratorio)
+                .filter((v, i, a) => v && a.indexOf(v) === i);
+
+            awesomplete.list = lista;
+
+            ocultarLoader();
+        },
+        error: function () {
+            ocultarLoader();
+            alert('Error al cargar autocompletado');
+        }
+    });
+}
+
+// Trigger cuando el input gana foco o cambia
+inputBusqueda.addEventListener('focus', cargarSugerencias);
+inputBusqueda.addEventListener('input', cargarSugerencias);
+
+$('#btnBuscar').on('click', function () {
+    const texto = $('#busqueda').val().trim().toLowerCase();
+    const body = $('#tabla-body');
+    body.empty();
+
+    mostrarLoader();
+
+    function filtrarYMostrar(data) {
+        let resultados = data;
+
+        if (texto !== "") {
+            resultados = data.filter(lab =>
+                (lab.laboratorio && lab.laboratorio.toLowerCase().includes(texto)) ||
+                (lab.porcentaje && lab.porcentaje.toString().toLowerCase().includes(texto))
+            );
+        }
+
+        if (resultados.length === 0) {
+            $('#tabla-resultados').addClass('d-none');
+            $('#mensaje-vacio').removeClass('d-none');
+        } else {
+            $('#mensaje-vacio').addClass('d-none');
+            $('#tabla-resultados').removeClass('d-none');
+
+            resultados.forEach((lab, index) => {
+                const porcentaje = parseFloat(lab.porcentaje) || 0;
+                const operacion = '+'; // valor por defecto
+
+                body.append(`
+                    <tr>
+                        <td>${lab.laboratorio || ''}</td>
+                        <td>
+                            <input type="number" class="form-control porcentaje-input"
+                                value="${porcentaje}"
+                                data-index="${index}"
+                                step="0.01" min="0" max="100">
+                        </td>
+                        <td>
+                            <select class="form-select operacion-select" data-index="${index}">
+                                <option value="+" selected>+</option>
+                                <option value="-">-</option>
+                            </select>
+                        </td>
+                    </tr>
+                `);
+            });
+        }
+
+        ocultarLoader();
+    }
+
+    if (cacheLaboratorios.length > 0) {
+        filtrarYMostrar(cacheLaboratorios);
+    } else {
+        $.ajax({
+            url: RUTA_LISTA_LABORATORIOS,
+            method: "GET",
+            success: function (data) {
+                cacheLaboratorios = data;
+                filtrarYMostrar(data);
+            },
+            error: function () {
+                ocultarLoader();
+                alert('Error al consultar los laboratorios.');
+            }
+        });
+    }
+});
+
+// GUARDAR CONFIGURACION
+
+$('#btnGuardar').on('click', function () {
+    const configuraciones = [];
+
+    $('#tabla-body tr').each(function () {
+        const laboratorio = $(this).find('td').eq(0).text().trim();
+        console.log(laboratorio);
+        const porcentaje = parseFloat($(this).find('.porcentaje-input').val()) || 0;
+
+        configuraciones.push({
+            laboratorio: laboratorio,
+            porcentaje: porcentaje
+        });
+    });
+
+    mostrarLoader();
+
+    $.ajax({
+        url: RUTA_GUARDAR_CONFIGURACION, // Define esta ruta como constante en tu JS
+        method: 'POST',
+        data: {
+            _token: $('meta[name="csrf-token"]').attr('content'),
+            configuraciones: configuraciones
+        },
+        success: function (response) {
+            ocultarLoader();
+            toggleModal();
+            alert('Configuración guardada correctamente.');
+        },
+        error: function () {
+            ocultarLoader();
+            alert('Error al guardar la configuración.');
+        }
+    });
+});
+
+// FIN GUARDAR CONFIGURACION

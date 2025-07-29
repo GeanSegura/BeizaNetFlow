@@ -3,56 +3,75 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Models\TmpExcel;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use Illuminate\Support\Facades\DB;
 
 class ExcelImportController extends Controller
 {
-   public function subirExcel(Request $request)
-{
+    public function subirExcel(Request $request)
+    {
 
-    $request->validate([
-        'archivo' => 'required|file|mimes:xlsx,xls,csv|max:102400'
-    ]);
+        DB::statement("CALL sp_truncar_tbl_excel_temp()");
 
-    dd($request->file('archivo'));
+        $archivo = $request->file('archivo_excel');
+        $spreadsheet = IOFactory::load($archivo);
+        $hoja = $spreadsheet->getActiveSheet();
 
-    TmpExcel::truncate();
+        foreach ($hoja->getRowIterator() as $index => $fila) {
+            $celdas = $fila->getCellIterator();
+            $celdas->setIterateOnlyExistingCells(false);
 
-    $datos = Excel::toArray([], $request->file('archivo'));
-    $filas = $datos[0];
+            $valores = [];
+            foreach ($celdas as $celda) {
+                $valores[] = trim((string) $celda->getValue());
+            }
 
-    if (count($filas) < 1) {
-        return response()->json(['success' => false, 'message' => 'El archivo Excel no tiene datos.']);
+            // Saltar cabecera
+            if ($index === 1) continue;
+
+            // Validar campos necesarios
+            if (empty($valores[0]) || empty($valores[1])) continue;
+
+            $id_articulo     = $valores[0];
+            $articulo        = $valores[1];
+            $precio_lista_1  = is_numeric($valores[2]) ? floatval($valores[2]) : 0;
+            $precio_costo    = is_numeric($valores[3]) ? floatval($valores[3]) : 0;
+            $laboratorio     = $valores[6];
+            $stock           = is_numeric($valores[8]) ? intval($valores[8]) : 0;
+
+            DB::statement("CALL sp_insertar_tbl_excel_temp(?, ?, ?, ?, ?, ?)", [
+                $id_articulo,
+                $articulo,
+                $precio_lista_1,
+                $precio_costo,
+                $laboratorio,
+                $stock
+            ]);
+        }
+
+        return back()
+            ->with('success', 'Excel procesado correctamente.')
+            ->with('abrir_modal', true);
     }
 
-    $cabecera = array_map(function ($item) {
-        return strtolower(str_replace([' ', '-', 'á', 'é', 'í', 'ó', 'ú'], ['_', '_', 'a', 'e', 'i', 'o', 'u'], trim($item)));
-    }, $filas[0]);
+    public function listaLaboratoriosExcel(Request $request)
+    {
 
-    unset($filas[0]);
-
-    foreach ($filas as $fila) {
-        $filaAsociativa = array_combine($cabecera, $fila);
-
-        TmpExcel::create([
-            'id_articulo'     => $filaAsociativa['numero_de_articulo'] ?? '',
-            'articulo'        => $filaAsociativa['descripcion_de_articulo'] ?? '',
-            'laboratorio'     => $filaAsociativa['nombre_del_grupo_articulos'] ?? '',
-            'stock'           => is_numeric($filaAsociativa['stock_actual'] ?? null) ? floatval($filaAsociativa['stock_actual']) : 0.00,
-            'precio_minimo'   => is_numeric($filaAsociativa['precio_contado'] ?? null) ? floatval($filaAsociativa['precio_contado']) : 0.00,
-            'precio_lista_1'  => is_numeric($filaAsociativa['precio_lista'] ?? null) ? floatval($filaAsociativa['precio_lista']) : 0.00,
-            'precio_costo'    => is_numeric($filaAsociativa['precio_sin_igv_pl1'] ?? null) ? floatval($filaAsociativa['precio_sin_igv_pl1']) : 0.00,
-            'porcentaje'      => 0.00
-        ]);
+        $laboratorios = DB::select('CALL sp_obtener_laboratorios_excel()');
+        return response()->json($laboratorios);
     }
 
-    return response()->json(['success' => true, 'message' => 'Archivo Excel importado correctamente']);
-}
-}
+    public function guardarConfiguracion(Request $request)
+    {
+        $configuraciones = $request->input('configuraciones');
 
-function safeFloat($value)
-{
-    return is_numeric($value) ? floatval($value) : 0.00;
-}
+        foreach ($configuraciones as $config) {
+            DB::statement('CALL sp_guardar_config_laboratorio(?, ?)', [
+                $config['laboratorio'],
+                $config['porcentaje']
+            ]);
+        }
 
+        return response()->json(['success' => true]);
+    }
+}

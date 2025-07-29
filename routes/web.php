@@ -45,11 +45,11 @@ Route::get('/VerArchivo/{loteId}', [ArchivoMostrarController::class, 'mostrarArc
 Route::get('/DescargarArchivo/{loteId}', [DescargarArchivoController::class, 'descargarArchivo'])->name('descargar.archivo');
 Route::match(['post', 'get'],'/RegistrarUsuario', [RegistrarController::class, 'insertarUsuario']);
 Route::match(['delete', 'get'],'/EliminarArchivoAWS/{loteId}', [EliminarArchivoBucketController::class, 'eliminarArchivoAWS']);
-Route::match(['post', 'get'],'/subir-excel', [ExcelImportController::class, 'subirExcel'])->name('subirExcel');
 
-
-
-
+//LABORATORIOS EXCEL
+Route::get('/lista-laboratorios-excel', [ExcelImportController::class, 'listaLaboratoriosExcel'])->name('listaLaboratoriosExcel');
+Route::post('/subir-excel', [ExcelImportController::class, 'subirExcel'])->name('subirExcel');
+Route::post('/guardar-configuracion', [ExcelImportController::class, 'guardarConfiguracion'])->name('guardarConfiguracion');
 
 
 
