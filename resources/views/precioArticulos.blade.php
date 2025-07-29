@@ -205,7 +205,8 @@
     <script>
         const RUTA_SUBIR_EXCEL = "{{ route('subirExcel') }}";
     </script>
-    <script src="./scripts/CargarExcel/cargarExcel.js"></script>
+    <script src="./scripts/CargarExcel/cargarExcel.js?v={{ time() }}"></script>
+
 
 </body>
 
