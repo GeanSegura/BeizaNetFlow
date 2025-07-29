@@ -29,7 +29,7 @@ class AutenticacionController extends Controller
                         Session::put('rol', $result[0]->ROL);
                         return redirect()->route('GestionLotes');
                     } else {
-                        $mensaje = "No tiene permisos para Visualizar precios de artículos.";
+                        $mensaje = "No tiene permisos para subir PDF de Lotes.";
                         return view('login', compact('mensaje'));
                     }
 
@@ -50,7 +50,8 @@ class AutenticacionController extends Controller
                         Session::put('rol', $result[0]->ROL);
                         return redirect()->route('PrecioArticulos');
                     } else {
-                        $mensaje = "No tiene permisos para subir PDF de Lotes.";
+
+                        $mensaje = "No tiene permisos para Visualizar precios de artículos.";
                         return view('login', compact('mensaje'));
                     }
 
