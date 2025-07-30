@@ -48,7 +48,12 @@ class AutenticacionController extends Controller
 
                     if ($result[0]->ROL == '003' || $result[0]->ROL == '004') {
                         Session::put('rol', $result[0]->ROL);
-                        return redirect()->route('PrecioArticulos');
+                        if ($result[0]->ROL == '003') {
+                             return redirect()->route('PrecioArticulos')->with('isConfiguracion', '0');
+                        } else {
+                             return redirect()->route('PrecioArticulos')->with('isConfiguracion', '1');
+                        }
+
                     } else {
 
                         $mensaje = "No tiene permisos para Visualizar precios de artículos.";

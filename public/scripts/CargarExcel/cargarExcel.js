@@ -1,7 +1,14 @@
+// modal de configuracion
 function toggleModal() {
     const modal = document.getElementById('modal-config');
     modal.style.display = modal.style.display === 'none' || modal.style.display === '' ? 'block' : 'none';
 }
+
+function activateModal() {
+    const modal = document.getElementById('modal-config');
+    modal.style.display = 'block';
+}
+// fin modal de configuracion
 
 function mostrarTabla() {
     const tablaBody = document.getElementById("tabla-body");
@@ -159,7 +166,7 @@ $('#btnBuscar').on('click', function () {
 
             resultados.forEach((lab, index) => {
                 const porcentaje = parseFloat(lab.porcentaje) || 0;
-                const operacion = '+'; // valor por defecto
+                const operacion = lab.ch_tipo_operacion || 1;
 
                 body.append(`
                     <tr>
@@ -171,9 +178,9 @@ $('#btnBuscar').on('click', function () {
                                 step="0.01" min="0" max="100">
                         </td>
                         <td>
-                            <select class="form-select operacion-select" data-index="${index}">
-                                <option value="+" selected>+</option>
-                                <option value="-">-</option>
+                             <select class="form-select operacion-select" data-index="${index}">
+                                <option value="1" ${operacion == 1 ? 'selected' : ''}>+</option>
+                                <option value="2" ${operacion == 2 ? 'selected' : ''}>-</option>
                             </select>
                         </td>
                     </tr>
@@ -184,22 +191,20 @@ $('#btnBuscar').on('click', function () {
         ocultarLoader();
     }
 
-    if (cacheLaboratorios.length > 0) {
-        filtrarYMostrar(cacheLaboratorios);
-    } else {
-        $.ajax({
-            url: RUTA_LISTA_LABORATORIOS,
-            method: "GET",
-            success: function (data) {
-                cacheLaboratorios = data;
-                filtrarYMostrar(data);
-            },
-            error: function () {
-                ocultarLoader();
-                alert('Error al consultar los laboratorios.');
-            }
-        });
-    }
+
+    $.ajax({
+        url: RUTA_LISTA_LABORATORIOS,
+        method: "GET",
+        success: function (data) {
+            cacheLaboratorios = data;
+            filtrarYMostrar(data);
+        },
+        error: function () {
+            ocultarLoader();
+            alert('Error al consultar los laboratorios.');
+        }
+    });
+
 });
 
 // GUARDAR CONFIGURACION
@@ -211,10 +216,12 @@ $('#btnGuardar').on('click', function () {
         const laboratorio = $(this).find('td').eq(0).text().trim();
         console.log(laboratorio);
         const porcentaje = parseFloat($(this).find('.porcentaje-input').val()) || 0;
+        const operacion = $(this).find('.operacion-select').val();
 
         configuraciones.push({
             laboratorio: laboratorio,
-            porcentaje: porcentaje
+            porcentaje: porcentaje,
+            operacion: operacion
         });
     });
 
@@ -229,12 +236,13 @@ $('#btnGuardar').on('click', function () {
         },
         success: function (response) {
             ocultarLoader();
-            toggleModal();
             alert('Configuración guardada correctamente.');
+            activateModal();
         },
         error: function () {
             ocultarLoader();
             alert('Error al guardar la configuración.');
+            activateModal();
         }
     });
 });

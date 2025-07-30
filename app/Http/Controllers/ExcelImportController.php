@@ -66,9 +66,10 @@ class ExcelImportController extends Controller
         $configuraciones = $request->input('configuraciones');
 
         foreach ($configuraciones as $config) {
-            DB::statement('CALL sp_guardar_config_laboratorio(?, ?)', [
+            DB::statement('CALL sp_guardar_config_laboratorio(?, ?,?)', [
                 $config['laboratorio'],
-                $config['porcentaje']
+                $config['porcentaje'],
+                $config['operacion']
             ]);
         }
 

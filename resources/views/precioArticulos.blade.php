@@ -172,7 +172,16 @@
                     <small>💊 Precio de Artículos por Laboratorio</small>
                 </div>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-sm btn-light" onclick="toggleModal()" title="Configuración">⚙️</button>
+
+                    @php
+                        $estado = session('isConfiguracion','0');
+                    @endphp
+
+                    <button class="btn btn-sm btn-light" onclick="toggleModal()" title="Configuración"
+                        @if ($estado === '0') disabled @endif>
+                        ⚙️
+                    </button>
+
                     <a class="btn btn-sm btn-danger" href="/login" title="Salir">⏻</a>
                 </div>
             </div>
@@ -261,7 +270,7 @@
             No se encontraron laboratorios.
         </div>
 
-        <button id="btnGuardar" class="btn btn-primary w-100 mt-3" type="button" >Guardar Cambios</button>
+        <button id="btnGuardar" class="btn btn-primary w-100 mt-3" type="button">Guardar Cambios</button>
     </div>
     </div>
 
@@ -269,7 +278,6 @@
     <script>
         const RUTA_LISTA_LABORATORIOS = "{{ route('listaLaboratoriosExcel') }}";
         const RUTA_GUARDAR_CONFIGURACION = "{{ route('guardarConfiguracion') }}";
-
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
