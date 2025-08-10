@@ -1,3 +1,10 @@
+<head>
+  <title>BeizaNetFlow</title>
+  <meta name="google-site-verification" content="HGOEFnuadrqWMCihs-TeFY4iEQ1czMu_oHIu1R5uUAU" />
+  <meta name="description" content="Software de gestión empresarial rápido, seguro y fácil de usar.">
+  <meta name="keywords" content="software de gestión, gestión empresarial, BeizaNetFlow, Midhco Distribuciones">
+</head>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
