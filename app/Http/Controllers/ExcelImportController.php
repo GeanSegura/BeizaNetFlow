@@ -9,6 +9,8 @@ use PhpParser\Node\Expr\NullsafeMethodCall;
 
 class ExcelImportController extends Controller
 {
+    protected $valor;
+
     public function subirExcel(Request $request)
     {
         ignore_user_abort(false);
@@ -101,5 +103,20 @@ class ExcelImportController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    public function ListarArticulosExcel(Request $request)
+    {
+        $laboratorio_id = $request->input('laboratorio_id');
+        $articulos = DB::select('CALL sp_obtener_articulos_excel(?)', [$laboratorio_id]);
+        return response()->json($articulos);
+    }
+
+    public function ListarDatosArticulo(Request $request)
+    {
+        $articulo_id = $request->input('articulo_id');
+        $laboratorio_id = $request->input('laboratorio_id');
+        $datos = DB::select('CALL sp_obtener_datos_articulo_excel(?,?)', [$laboratorio_id, $articulo_id]);
+        return response()->json($datos);
     }
 }

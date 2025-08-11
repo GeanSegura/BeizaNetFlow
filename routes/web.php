@@ -48,6 +48,8 @@ Route::match(['delete', 'get'],'/EliminarArchivoAWS/{loteId}', [EliminarArchivoB
 
 //LABORATORIOS EXCEL
 Route::get('/lista-laboratorios-excel', [ExcelImportController::class, 'listaLaboratoriosExcel'])->name('listaLaboratoriosExcel');
+Route::get('/ListarArticulosExcel', [ExcelImportController::class, 'ListarArticulosExcel'])->name('ListarArticulosExcel');
+Route::get('/ListarDatosArticulo', [ExcelImportController::class, 'ListarDatosArticulo'])->name('ListarDatosArticulo');
 Route::post('/subir-excel', [ExcelImportController::class, 'subirExcel'])->name('subirExcel');
 Route::post('/guardar-configuracion', [ExcelImportController::class, 'guardarConfiguracion'])->name('guardarConfiguracion');
 

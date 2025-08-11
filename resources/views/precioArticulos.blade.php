@@ -64,8 +64,10 @@
         }
 
         .chat-input {
+            position: relative;
             display: flex;
             padding: 10px;
+            height: 364px;
         }
 
         .chat-input input {
@@ -158,6 +160,31 @@
             #tabla-resultados {
                 overflow-x: auto;
             }
+
+            .table-primary {
+                width: 100%;
+                /* Que la tabla ocupe todo el contenedor */
+                border-collapse: collapse;
+                table-layout: auto;
+                /* columnas se ajustan según contenido */
+            }
+
+            th,
+            td {
+                padding: 8px 12px;
+                border: 1px solid #ddd;
+                text-align: left;
+                white-space: nowrap;
+                /* evita que texto largo se rompa en varias líneas */
+            }
+
+            thead th {
+                background-color: #cfe2ff;
+            }
+
+            tbody tr:hover {
+                background-color: #f1f1f1;
+            }
         }
     </style>
 </head>
@@ -174,7 +201,7 @@
                 <div class="d-flex gap-2">
 
                     @php
-                        $estado = session('isConfiguracion','0');
+                        $estado = session('isConfiguracion', '0');
                     @endphp
 
                     <button class="btn btn-sm btn-light" onclick="toggleModal()" title="Configuración"
@@ -192,14 +219,20 @@
             </div>
 
             <div class="chat-input">
-                <input type="text" id="user-input" placeholder="Escribe tu mensaje...">
-                <button onclick="enviarPregunta()">➤</button>
+                <input type="text" id="user-input" placeholder="Buscar laboratorio...">
+
+                <button id="btnVolverLaboratorio" onclick="volverALaboratorio()" class="btn btn-sm btn-primary">🔙
+                    Volver a Laboratorio</button>
+
+                <button id="btnLimpiarChat" onclick="limpiarChat()" class="btn btn-sm btn-warning"
+                    style="margin-left: 10px;">🧹 Limpiar Chat</button>
+
+                <button onclick="enviarPregunta2()">➤</button>
             </div>
         </div>
 
+
         <!-- Modal configuración -->
-
-
         <form method="POST" action="{{ route('subirExcel') }}" enctype="multipart/form-data"
             onsubmit="return validarYMostrarLoader()">
             @csrf
@@ -277,6 +310,8 @@
     <!-- Bootstrap JS -->
     <script>
         const RUTA_LISTA_LABORATORIOS = "{{ route('listaLaboratoriosExcel') }}";
+        const RUTA_LISTA_ARTICULOS = "{{ route('ListarArticulosExcel') }}";
+        const RUTA_DATOS_ARTICULO = "{{ route('ListarDatosArticulo') }}";
         const RUTA_GUARDAR_CONFIGURACION = "{{ route('guardarConfiguracion') }}";
     </script>
 
