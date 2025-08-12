@@ -407,6 +407,12 @@ function enviarPregunta2() {
 
                 awesomplete2.list = listaArticulos;
 
+                const awesompleteList = document.querySelector('.awesomplete ul');
+                if (awesompleteList) {
+                    awesompleteList.style.maxHeight = '360px';
+                    awesompleteList.style.overflowY = 'auto';
+                }
+
                 chatMessages2.insertAdjacentHTML('beforeend', `<div><strong>Usuario:</strong> ${texto}</div>`);
                 chatMessages2.insertAdjacentHTML('beforeend', `<div><strong>BeizaNetFlow:</strong> Procesando artículo <em>${"artículo"}</em>...</div>`);
                 chatMessages2.scrollTop = chatMessages2.scrollHeight;
@@ -450,7 +456,7 @@ function enviarPregunta2() {
           <th>Costo Proveedor con IGV</th>
           <th>Adicional 1</th>
           <th>Adicional 2</th>
-          <th>Precio Final</th>
+          <th>Precio mínimo</th>
         </tr>
       </thead>
       <tbody>`;

@@ -27,8 +27,7 @@
         }
 
         .chat-card {
-            width: 80%;
-            max-width: 800px;
+            width: 98%;
             border-radius: 15px;
             overflow: hidden;
             background: white;
