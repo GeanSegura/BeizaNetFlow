@@ -1,5 +1,6 @@
 var laboratorioId = "";
 // estadoConfiguracion
+alert(estadoConfiguracion)
 // modal de configuracion
 function toggleModal() {
     const modal = document.getElementById('modal-config');
@@ -424,6 +425,7 @@ function enviarPregunta2() {
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
         <tr>
+               <th>Artículo</th>
           <th>Precio Lista</th>>
           <th>Stock</th>
           <th>Laboratorio</th>
@@ -435,6 +437,7 @@ function enviarPregunta2() {
                         resp.forEach(item => {
                             tablaHTML += `
     <tr>
+        <td>${item.articulo || ''}</td>
       <td>${item.precio_lista || ''}</td>
       <td>${item.stock || ''}</td>
       <td>${item.laboratorio || ''}</td>
@@ -565,6 +568,7 @@ function enviarPregunta2() {
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
         <tr>
+        <th>Artículo</th>
           <th>Precio Lista</th>>
           <th>Stock</th>
           <th>Laboratorio</th>
@@ -576,6 +580,7 @@ function enviarPregunta2() {
                         resp.forEach(item => {
                             tablaHTML += `
     <tr>
+    <td>${item.articulo || ''}</td>
       <td>${item.precio_lista || ''}</td>
       <td>${item.stock || ''}</td>
       <td>${item.laboratorio || ''}</td>

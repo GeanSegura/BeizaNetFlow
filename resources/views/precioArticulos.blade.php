@@ -312,11 +312,11 @@
 
         const RUTA_DATOS_ARTICULO = (estadoConfiguracion === '0') ?
             "{{ route('ListarDatosArticuloVisualizar') }}" :
-            "{{ route('ListarDatosArticuloVisualizar') }}";
+            "{{ route('ListarDatosArticulo') }}";
 
         const RUTA_DATOS_ARTICULO_ALL = (estadoConfiguracion === '0') ?
-            "{{ route('ListarDatosArticuloAll') }}" :
-            "{{ route('ListarDatosArticuloVisualizarAll') }}";
+            "{{ route('ListarDatosArticuloVisualizarAll') }}" :
+            "{{ route('ListarDatosArticuloAll') }}";
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
