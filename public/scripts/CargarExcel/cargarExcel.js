@@ -1,4 +1,5 @@
 var laboratorioId = "";
+// estadoConfiguracion
 // modal de configuracion
 function toggleModal() {
     const modal = document.getElementById('modal-config');
@@ -295,10 +296,10 @@ function cargarLaboratorios2() {
             awesomplete2.list = lista;
 
             const awesompleteList = document.querySelector('.awesomplete ul');
-                if (awesompleteList) {
-                    awesompleteList.style.maxHeight = '360px';
-                    awesompleteList.style.overflowY = 'auto';
-                }
+            if (awesompleteList) {
+                awesompleteList.style.maxHeight = '360px';
+                awesompleteList.style.overflowY = 'auto';
+            }
 
         },
         error: function () {
@@ -325,10 +326,10 @@ function cargarArticulos2(laboratorioId) {
             awesomplete2.list = lista;
 
             const awesompleteList = document.querySelector('.awesomplete ul');
-                if (awesompleteList) {
-                    awesompleteList.style.maxHeight = '360px';
-                    awesompleteList.style.overflowY = 'auto';
-                }
+            if (awesompleteList) {
+                awesompleteList.style.maxHeight = '360px';
+                awesompleteList.style.overflowY = 'auto';
+            }
 
         },
         error: function () {
@@ -416,7 +417,37 @@ function enviarPregunta2() {
                 ocultarLoader2();
 
                 if (resp && resp.length > 0) {
-                    let tablaHTML = `
+
+                    if (estadoConfiguracion === '0') {
+                        var tablaHTML = `
+  <div style="overflow-x:auto;">
+    <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
+      <thead class="table-primary">
+        <tr>
+          <th>Precio Lista</th>>
+          <th>Stock</th>
+          <th>Laboratorio</th>
+          <th>Precio mínimo</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+                        resp.forEach(item => {
+                            tablaHTML += `
+    <tr>
+      <td>${item.precio_lista || ''}</td>
+      <td>${item.stock || ''}</td>
+      <td>${item.laboratorio || ''}</td>
+      <td>${item.precio_final || ''}</td>
+    </tr>`;
+                        });
+
+                        tablaHTML += `
+      </tbody>
+    </table>
+  </div>`;
+                    } else {
+                        var tablaHTML = `
   <div style="overflow-x:auto;">
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
@@ -437,8 +468,8 @@ function enviarPregunta2() {
       </thead>
       <tbody>`;
 
-                    resp.forEach(item => {
-                        tablaHTML += `
+                        resp.forEach(item => {
+                            tablaHTML += `
     <tr>
       <td>${item.articulo || ''}</td>
       <td>${item.precio_lista || ''}</td>
@@ -453,12 +484,15 @@ function enviarPregunta2() {
       <td>${item.adicional2 || ''}</td>
       <td>${item.precio_final || ''}</td>
     </tr>`;
-                    });
+                        });
 
-                    tablaHTML += `
+                        tablaHTML += `
       </tbody>
     </table>
   </div>`;
+                    }
+
+
                     // Suponiendo que chatMessages2 es el div donde quieres mostrar
                     const chatMessages2 = document.getElementById('chat-messages');
                     chatMessages2.insertAdjacentHTML('beforeend', tablaHTML);
@@ -513,8 +547,6 @@ function enviarPregunta2() {
 
     else if (estadoActual2 === 'datosArticulos') {
         var textoArticulo = inputBusqueda2.value.trim();
-        alert(laboratorioId);
-        alert(textoArticulo);
         mostrarLoader2();
         $.ajax({
             url: RUTA_DATOS_ARTICULO,
@@ -527,7 +559,36 @@ function enviarPregunta2() {
                 ocultarLoader2();
                 console.log(resp)
                 if (resp && resp.length > 0) {
-                    let tablaHTML = `
+                    if (estadoConfiguracion === '0') {
+                        var tablaHTML = `
+  <div style="overflow-x:auto;">
+    <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
+      <thead class="table-primary">
+        <tr>
+          <th>Precio Lista</th>>
+          <th>Stock</th>
+          <th>Laboratorio</th>
+          <th>Precio mínimo</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+                        resp.forEach(item => {
+                            tablaHTML += `
+    <tr>
+      <td>${item.precio_lista || ''}</td>
+      <td>${item.stock || ''}</td>
+      <td>${item.laboratorio || ''}</td>
+      <td>${item.precio_final || ''}</td>
+    </tr>`;
+                        });
+
+                        tablaHTML += `
+      </tbody>
+    </table>
+  </div>`;
+                    } else {
+                        var tablaHTML = `
   <div style="overflow-x:auto;">
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
@@ -548,8 +609,8 @@ function enviarPregunta2() {
       </thead>
       <tbody>`;
 
-                    resp.forEach(item => {
-                        tablaHTML += `
+                        resp.forEach(item => {
+                            tablaHTML += `
     <tr>
       <td>${item.articulo || ''}</td>
       <td>${item.precio_lista || ''}</td>
@@ -564,12 +625,14 @@ function enviarPregunta2() {
       <td>${item.adicional2 || ''}</td>
       <td>${item.precio_final || ''}</td>
     </tr>`;
-                    });
+                        });
 
-                    tablaHTML += `
+                        tablaHTML += `
       </tbody>
     </table>
   </div>`;
+                    }
+
                     // Suponiendo que chatMessages2 es el div donde quieres mostrar
                     const chatMessages2 = document.getElementById('chat-messages');
                     chatMessages2.insertAdjacentHTML('beforeend', tablaHTML);

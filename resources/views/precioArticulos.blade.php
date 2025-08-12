@@ -305,13 +305,18 @@
 
     <!-- Bootstrap JS -->
     <script>
+        const estadoConfiguracion = "{{ $estado }}";
         const RUTA_LISTA_LABORATORIOS = "{{ route('listaLaboratoriosExcel') }}";
         const RUTA_LISTA_ARTICULOS = "{{ route('ListarArticulosExcel') }}";
-        const RUTA_DATOS_ARTICULO = "{{ route('ListarDatosArticulo') }}";
-        const RUTA_DATOS_ARTICULO_ALL = "{{ route('ListarDatosArticuloAll') }}";
-        const RUTA_DATOS_ARTICULO_VISUALIZAR = "{{ route('ListarDatosArticuloVisualizar') }}";
-        const RUTA_DATOS_ARTICULO_VISUALIZAR_ALL = "{{ route('ListarDatosArticuloVisualizarAll') }}";
         const RUTA_GUARDAR_CONFIGURACION = "{{ route('guardarConfiguracion') }}";
+
+        const RUTA_DATOS_ARTICULO = (estadoConfiguracion === '0') ?
+            "{{ route('ListarDatosArticuloVisualizar') }}" :
+            "{{ route('ListarDatosArticuloVisualizar') }}";
+
+        const RUTA_DATOS_ARTICULO_ALL = (estadoConfiguracion === '0') ?
+            "{{ route('ListarDatosArticuloAll') }}" :
+            "{{ route('ListarDatosArticuloVisualizarAll') }}";
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
