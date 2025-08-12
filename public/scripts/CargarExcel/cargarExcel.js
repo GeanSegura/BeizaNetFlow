@@ -1,6 +1,6 @@
 var laboratorioId = "";
 // estadoConfiguracion
-alert(estadoConfiguracion)
+// alert(estadoConfiguracion)
 // modal de configuracion
 function toggleModal() {
     const modal = document.getElementById('modal-config');
