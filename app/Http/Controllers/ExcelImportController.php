@@ -119,4 +119,26 @@ class ExcelImportController extends Controller
         $datos = DB::select('CALL sp_obtener_datos_articulo_excel(?,?)', [$laboratorio_id, $articulo_id]);
         return response()->json($datos);
     }
+
+     public function ListarDatosArticuloAll(Request $request)
+    {
+        $laboratorio_id = $request->input('laboratorio_id');
+        $datos = DB::select('CALL sp_obtener_datos_articulo_excel_all(?)', [$laboratorio_id]);
+        return response()->json($datos);
+    }
+
+    public function ListarDatosArticuloVisualizar(Request $request)
+    {
+        $articulo_id = $request->input('articulo_id');
+        $laboratorio_id = $request->input('laboratorio_id');
+        $datos = DB::select('CALL sp_obtener_datos_articulo_excel_rol_visualizar(?,?)', [$laboratorio_id, $articulo_id]);
+        return response()->json($datos);
+    }
+
+     public function ListarDatosArticuloVisualizarAll(Request $request)
+    {
+        $laboratorio_id = $request->input('laboratorio_id');
+        $datos = DB::select('CALL sp_obtener_datos_articulo_excel_rol_visualizar_all(?)', [$laboratorio_id]);
+        return response()->json($datos);
+    }
 }

@@ -59,14 +59,14 @@
             border-top: 1px solid #ddd;
             border-bottom: 1px solid #ddd;
             scroll-behavior: smooth;
-            max-height: 300px;
+            max-height: 560px;
         }
 
         .chat-input {
             position: relative;
             display: flex;
             padding: 10px;
-            height: 364px;
+            height: 280px;
         }
 
         .chat-input input {
@@ -220,9 +220,6 @@
             <div class="chat-input">
                 <input type="text" id="user-input" placeholder="Buscar laboratorio...">
 
-                <button id="btnVolverLaboratorio" onclick="volverALaboratorio()" class="btn btn-sm btn-primary">🔙
-                    Volver a Laboratorio</button>
-
                 <button id="btnLimpiarChat" onclick="limpiarChat()" class="btn btn-sm btn-warning"
                     style="margin-left: 10px;">🧹 Limpiar Chat</button>
 
@@ -311,6 +308,9 @@
         const RUTA_LISTA_LABORATORIOS = "{{ route('listaLaboratoriosExcel') }}";
         const RUTA_LISTA_ARTICULOS = "{{ route('ListarArticulosExcel') }}";
         const RUTA_DATOS_ARTICULO = "{{ route('ListarDatosArticulo') }}";
+        const RUTA_DATOS_ARTICULO_ALL = "{{ route('ListarDatosArticuloAll') }}";
+        const RUTA_DATOS_ARTICULO_VISUALIZAR = "{{ route('ListarDatosArticuloVisualizar') }}";
+        const RUTA_DATOS_ARTICULO_VISUALIZAR_ALL = "{{ route('ListarDatosArticuloVisualizarAll') }}";
         const RUTA_GUARDAR_CONFIGURACION = "{{ route('guardarConfiguracion') }}";
     </script>
 

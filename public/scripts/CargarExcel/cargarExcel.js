@@ -293,12 +293,20 @@ function cargarLaboratorios2() {
                 .map(l => ({ label: l.laboratorio, value: l.id_laboratorio }));
 
             awesomplete2.list = lista;
+
+            const awesompleteList = document.querySelector('.awesomplete ul');
+                if (awesompleteList) {
+                    awesompleteList.style.maxHeight = '360px';
+                    awesompleteList.style.overflowY = 'auto';
+                }
+
         },
         error: function () {
             ocultarLoader2();
             alert('Error al cargar laboratorios');
         }
     });
+
 }
 
 function cargarArticulos2(laboratorioId) {
@@ -315,6 +323,13 @@ function cargarArticulos2(laboratorioId) {
                 .map(a => ({ label: a.articulo, value: a.id }));
 
             awesomplete2.list = lista;
+
+            const awesompleteList = document.querySelector('.awesomplete ul');
+                if (awesompleteList) {
+                    awesompleteList.style.maxHeight = '360px';
+                    awesompleteList.style.overflowY = 'auto';
+                }
+
         },
         error: function () {
             ocultarLoader2();
@@ -391,6 +406,75 @@ function enviarPregunta2() {
         });
     } else if (estadoActual2 === 'articulo') {
         var texto = inputBusqueda2.value.trim();
+
+        mostrarLoader2();
+        $.ajax({
+            url: RUTA_DATOS_ARTICULO_ALL,
+            method: "GET",
+            data: { laboratorio_id: texto },
+            success: function (resp) {
+                ocultarLoader2();
+
+                if (resp && resp.length > 0) {
+                    let tablaHTML = `
+  <div style="overflow-x:auto;">
+    <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
+      <thead class="table-primary">
+        <tr>
+          <th>Artículo</th>
+          <th>Precio Lista</th>
+          <th>Precio sin IGV PL1</th>
+          <th>Precio Contado</th>
+          <th>Precio sin IGV PL2</th>
+          <th>Laboratorio</th>
+          <th>Stock</th>
+          <th>Costo Proveedor</th>
+          <th>Costo Proveedor con IGV</th>
+          <th>Adicional 1</th>
+          <th>Adicional 2</th>
+          <th>Precio mínimo</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+                    resp.forEach(item => {
+                        tablaHTML += `
+    <tr>
+      <td>${item.articulo || ''}</td>
+      <td>${item.precio_lista || ''}</td>
+      <td>${item.prec_list_sin_igv_pl1 || ''}</td>
+      <td>${item.precio_contado || ''}</td>
+      <td>${item.prec_list_sin_IGV_pl2 || ''}</td>
+      <td>${item.laboratorio || ''}</td>
+      <td>${item.stock || ''}</td>
+      <td>${item.costo_proveedor || ''}</td>
+      <td>${item.costo_proveedor_con_igv || ''}</td>
+      <td>${item.adicional1 || ''}</td>
+      <td>${item.adicional2 || ''}</td>
+      <td>${item.precio_final || ''}</td>
+    </tr>`;
+                    });
+
+                    tablaHTML += `
+      </tbody>
+    </table>
+  </div>`;
+                    // Suponiendo que chatMessages2 es el div donde quieres mostrar
+                    const chatMessages2 = document.getElementById('chat-messages');
+                    chatMessages2.insertAdjacentHTML('beforeend', tablaHTML);
+                } else {
+                    alert("No hay datos para mostrar.");
+                }
+            },
+            error: function () {
+                ocultarLoader2();
+                alert('Error al cargar laboratorios');
+            }
+        });
+
+
+
+
         inputBusqueda2.value = '';
         inputBusqueda2.placeholder = 'Buscar artículo...';
         estadoActual2 = 'datosArticulos';
@@ -401,11 +485,14 @@ function enviarPregunta2() {
             method: "GET",
             data: { laboratorio_id: texto },
             success: function (data) {
+
                 ocultarLoader2();
 
                 const listaArticulos = data.map(a => ({ label: a.articulo, value: a.id }));
 
                 awesomplete2.list = listaArticulos;
+
+
 
                 const awesompleteList = document.querySelector('.awesomplete ul');
                 if (awesompleteList) {
