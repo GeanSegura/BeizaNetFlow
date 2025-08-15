@@ -425,8 +425,9 @@ function enviarPregunta2() {
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
         <tr>
-               <th>Artículo</th>
-          <th>Precio Lista</th>>
+          <th>ID Artículo</th>
+          <th>Artículo</th>
+          <th>Precio Lista</th>
           <th>Stock</th>
           <th>Laboratorio</th>
           <th>Precio mínimo</th>
@@ -437,6 +438,7 @@ function enviarPregunta2() {
                         resp.forEach(item => {
                             tablaHTML += `
     <tr>
+        <td>${item.id_articulo || ''}</td>
         <td>${item.articulo || ''}</td>
       <td>${item.precio_lista || ''}</td>
       <td>${item.stock || ''}</td>
@@ -455,6 +457,7 @@ function enviarPregunta2() {
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
         <tr>
+          <th>ID Artículo</th>
           <th>Artículo</th>
           <th>Precio Lista</th>
           <th>Precio sin IGV PL1</th>
@@ -474,6 +477,7 @@ function enviarPregunta2() {
                         resp.forEach(item => {
                             tablaHTML += `
     <tr>
+      <td>${item.id_articulo || ''}</td>
       <td>${item.articulo || ''}</td>
       <td>${item.precio_lista || ''}</td>
       <td>${item.prec_list_sin_igv_pl1 || ''}</td>
@@ -568,6 +572,7 @@ function enviarPregunta2() {
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
         <tr>
+        <th>ID Artículo</th>
         <th>Artículo</th>
           <th>Precio Lista</th>>
           <th>Stock</th>
@@ -580,6 +585,7 @@ function enviarPregunta2() {
                         resp.forEach(item => {
                             tablaHTML += `
     <tr>
+    <td>${item.id_articulo || ''}</td>
     <td>${item.articulo || ''}</td>
       <td>${item.precio_lista || ''}</td>
       <td>${item.stock || ''}</td>
@@ -598,6 +604,7 @@ function enviarPregunta2() {
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
         <tr>
+          <th>ID Artículo</th>
           <th>Artículo</th>
           <th>Precio Lista</th>
           <th>Precio sin IGV PL1</th>
@@ -617,6 +624,7 @@ function enviarPregunta2() {
                         resp.forEach(item => {
                             tablaHTML += `
     <tr>
+      <td>${item.id_articulo || ''}</td>
       <td>${item.articulo || ''}</td>
       <td>${item.precio_lista || ''}</td>
       <td>${item.prec_list_sin_igv_pl1 || ''}</td>
