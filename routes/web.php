@@ -56,6 +56,11 @@ Route::get('/ListarDatosArticuloVisualizarAll', [ExcelImportController::class, '
 Route::post('/subir-excel', [ExcelImportController::class, 'subirExcel'])->name('subirExcel');
 Route::post('/guardar-configuracion', [ExcelImportController::class, 'guardarConfiguracion'])->name('guardarConfiguracion');
 
+// sin filtro
+Route::get('/ListarDatosArticuloAllSF', [ExcelImportController::class, 'ListarDatosArticuloAllSF'])->name('ListarDatosArticuloAllSF');
+Route::get('/ListarDatosArticuloVisualizarSF', [ExcelImportController::class, 'ListarDatosArticuloVisualizarSF'])->name('ListarDatosArticuloVisualizarSF');
+Route::get('/listaArticulosExcelSF', [ExcelImportController::class, 'listaArticulosExcelSF'])->name('listaArticulosExcelSF');
+
 
 
 

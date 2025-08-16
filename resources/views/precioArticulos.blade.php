@@ -11,6 +11,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.css" />
 
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
     <style>
         body {
             background: #f0f2f5;
@@ -215,15 +217,32 @@
 
             <div id="chat-messages">
                 <div><strong>BeizaNetFlow:</strong> Hola 👋 ¿En qué puedo ayudarte?</div>
+                {{-- <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="switchSinFiltroLaboratorio">
+                    <label class="form-check-label" for="switchSinFiltroLaboratorio">Buscar por artículos sin filtro de
+                        laboratorio</label>
+                </div> --}}
             </div>
 
             <div class="chat-input">
                 <input type="text" id="user-input" placeholder="Buscar laboratorio...">
+                <div id="divBusquedaPlus"
+                    style="width:260px; margin:20px; display:none; position: relative; z-index: 1000;">
+                    <label for="inputBusquedaPlus"
+                        style="font-size: 14px; color: #444; display: block; margin-bottom: 6px;">
+                        Buscar artículo:
+                    </label>
+                    <select id="inputBusquedaPlus" style="width: 100%;">
+
+                    </select>
+                </div>
+
 
                 <button id="btnLimpiarChat" onclick="limpiarChat()" class="btn btn-sm btn-warning"
                     style="margin-left: 10px;">🧹 Limpiar Chat</button>
 
                 <button onclick="enviarPregunta2()">➤</button>
+                <button id="btn-exportar-pdf" style="background: red">PDF</button>
             </div>
         </div>
 
@@ -263,10 +282,6 @@
             </script>
         @endif
 
-        <div id="loader" class="loader-overlay" style="display: none;">
-            <div class="spinner-border text-primary loader-size" role="status"></div>
-        </div>
-
         <div class="mb-3">
             <label for="busqueda">Buscar laboratorio:</label>
             <div class="input-group">
@@ -303,12 +318,21 @@
     </div>
     </div>
 
+    <div id="loader" class="loader-overlay" style="display: none;">
+        <div class="spinner-border text-primary loader-size" role="status"></div>
+    </div>
+
+
     <!-- Bootstrap JS -->
     <script>
         const estadoConfiguracion = "{{ $estado }}";
         const RUTA_LISTA_LABORATORIOS = "{{ route('listaLaboratoriosExcel') }}";
         const RUTA_LISTA_ARTICULOS = "{{ route('ListarArticulosExcel') }}";
         const RUTA_GUARDAR_CONFIGURACION = "{{ route('guardarConfiguracion') }}";
+
+        const RUTA_LISTA_ARTICULOS_SF = "{{ route('listaArticulosExcelSF') }}";
+        const RUTA_DATOS_ARTICULO_SF = "{{ route('ListarDatosArticuloVisualizarSF') }}";
+        const RUTA_DATOS_ARTICULO_ALL_SF = "{{ route('ListarDatosArticuloAllSF') }}";
 
         const RUTA_DATOS_ARTICULO = (estadoConfiguracion === '0') ?
             "{{ route('ListarDatosArticuloVisualizar') }}" :
@@ -322,6 +346,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
     <script src="./scripts/CargarExcel/cargarExcel.js?v={{ time() }}"></script>
 
 

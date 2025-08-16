@@ -1,7 +1,30 @@
+const switchCheck = document.getElementById('switchSinFiltroLaboratorio');
+const inputBusqueda2 = document.getElementById('user-input');
+const inputBusquedaPlus = document.getElementById('inputBusquedaPlus');
+const divBusquedaPlus = document.getElementById('divBusquedaPlus');
+const btnExportarPDF = document.getElementById('btn-exportar-pdf');
+let tablaHTML = '';
+let awesomplete2 = new Awesomplete(inputBusqueda2, { minChars: 1, maxItems: 10, autoFirst: true });
 var laboratorioId = "";
-// estadoConfiguracion
-// alert(estadoConfiguracion)
-// modal de configuracion
+let isSinFiltro = false;
+
+//switchSinFiltroLaboratorio
+// switchCheck.addEventListener('change', function () {
+//     if (this.checked) {
+//         isSinFiltro = true;
+//         inputBusqueda2.style.display = "none"; // Ocultar
+//         divBusquedaPlus.style.display = "block"; // Mostrar
+
+//     } else {
+//         isSinFiltro = false;
+//         inputBusqueda2.value = '';
+//         inputBusqueda2.placeholder = 'Buscar artículo...';
+//         divBusquedaPlus.style.display = "none"; // Ocultar
+//         inputBusqueda2.style.display = "block"; // Mostrar
+//     }
+// });
+//switchSinFiltroLaboratorio
+
 function toggleModal() {
     const modal = document.getElementById('modal-config');
     modal.style.display = modal.style.display === 'none' || modal.style.display === '' ? 'block' : 'none';
@@ -39,39 +62,6 @@ function mostrarTabla() {
     `;
     document.getElementById("tabla-resultados").classList.remove("d-none");
 }
-
-function enviarPregunta() {
-    const input = document.getElementById("user-input");
-    const mensaje = input.value.trim();
-    if (!mensaje) return;
-
-    const chat = document.getElementById("chat-messages");
-    chat.innerHTML += `<div><strong>Tú:</strong> ${mensaje}</div>`;
-
-    chat.innerHTML += `
-      <div><strong>BeizaNetFlow:</strong> Resultados del laboratorio "${mensaje}":</div>
-      <table class="table table-bordered table-sm mt-2">
-        <thead>
-          <tr>
-            <th>ID</th><th>Nombre</th><th>Porcentaje %</th><th>Stock</th><th>Estado</th><th>Precio</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>1</td><td>${mensaje} A</td><td>10%</td><td>50</td><td>Activo</td><td>S/ 35.00</td></tr>
-          <tr><td>2</td><td>${mensaje} B</td><td>5%</td><td>20</td><td>Inactivo</td><td>S/ 45.00</td></tr>
-        </tbody>
-      </table>
-    `;
-    chat.scrollTop = chat.scrollHeight;
-    input.value = "";
-}
-
-document.getElementById("user-input").addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-        event.preventDefault();
-        enviarPregunta();
-    }
-});
 
 function validarYMostrarLoader() {
     const inputArchivo = document.getElementById('excel-upload');
@@ -254,7 +244,6 @@ $('#btnGuardar').on('click', function () {
 // INICIO CHAT BOT LABORATORIOS
 
 
-const inputBusqueda2 = document.getElementById('user-input');
 const chatMessages2 = document.getElementById('chat-messages');
 const btnEnviar2 = document.querySelector('button[onclick="enviarPregunta()"]');
 
@@ -270,7 +259,75 @@ inputBusqueda2.addEventListener('focus', function () {
     }
 });
 
-let awesomplete2 = new Awesomplete(inputBusqueda2, { minChars: 1, maxItems: 10, autoFirst: true });
+
+$('#inputBusquedaPlus').select2({
+    ajax: {
+        url: RUTA_LISTA_ARTICULOS_SF,
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+            return { q: params.term };
+        },
+        processResults: function (data) {
+            const lista = data
+                .map(l => ({ id: l.id, text: l.articulo }))
+                .filter(v => typeof v.text === "string" && v.text.trim() !== "");
+            return { results: lista };
+        }
+    },
+    placeholder: 'Buscar artículo...',
+    minimumInputLength: 1,
+    width: 'resolve',
+    language: {
+        searching: function () { return "Buscando..."; },
+        noResults: function () { return "No se encontraron resultados"; }
+    },
+    templateResult: function (data) {
+        if (!data.id) return data.text;
+        const term = $('.select2-search__field').val() || '';
+        if (term === '') return data.text;
+        const regex = new RegExp('(' + term + ')', 'gi');
+        return $('<span>').html(data.text.replace(regex,'<span style="background-color: yellow; font-weight: bold;">$1</span>'));
+    },
+    // Apunta al body en vez del parent
+    dropdownParent: $('body')
+});
+
+// Capturar la selección
+$('#inputBusquedaPlus').on('select2:select', function(e){
+    const data = e.params.data;
+    console.log('Seleccionado:', data.id, data.text);
+});
+
+
+// Capturar la selección
+$('#inputBusquedaPlus').on('select2:select', function (e) {
+    const dataSeleccionada = e.params.data;
+    const idSeleccionado = dataSeleccionada.id;
+    const textoSeleccionado = dataSeleccionada.text;
+
+    console.log('ID seleccionado:', idSeleccionado);
+    console.log('Texto seleccionado:', textoSeleccionado);
+
+    // // Ejemplo de enviar a otro AJAX
+    // $.ajax({
+    //     url: 'RUTA_OTRO_AJAX', // Cambia por tu URL
+    //     type: 'POST',
+    //     data: {
+    //         id: idSeleccionado,
+    //         texto: textoSeleccionado
+    //     },
+    //     success: function (response) {
+    //         console.log('Respuesta del servidor:', response);
+    //     },
+    //     error: function (err) {
+    //         console.error('Error en AJAX:', err);
+    //     }
+    // });
+});
+
+
+
 
 // Mostrar loader simple (puedes adaptar)
 function mostrarLoader2() {
@@ -282,32 +339,35 @@ function ocultarLoader2() {
 }
 
 function cargarLaboratorios2() {
-    mostrarLoader2();
-    estadoActual2 = 'articulo';
-    $.ajax({
-        url: RUTA_LISTA_LABORATORIOS,
-        method: "GET",
-        success: function (data) {
-            ocultarLoader2();
+    mostrarLoader();
 
-            const lista = data
-                .filter(l => l.laboratorio && l.id_laboratorio)
-                .map(l => ({ label: l.laboratorio, value: l.id_laboratorio }));
+    if (!isSinFiltro) {
+        estadoActual2 = 'articulo';
+        $.ajax({
+            url: RUTA_LISTA_LABORATORIOS,
+            method: "GET",
+            success: function (data) {
+                ocultarLoader2();
 
-            awesomplete2.list = lista;
+                const lista = data
+                    .filter(l => l.laboratorio && l.id_laboratorio)
+                    .map(l => ({ label: l.laboratorio, value: l.id_laboratorio }));
 
-            const awesompleteList = document.querySelector('.awesomplete ul');
-            if (awesompleteList) {
-                awesompleteList.style.maxHeight = '360px';
-                awesompleteList.style.overflowY = 'auto';
+                awesomplete2.list = lista;
+
+                const awesompleteList = document.querySelector('.awesomplete ul');
+                if (awesompleteList) {
+                    awesompleteList.style.maxHeight = '360px';
+                    awesompleteList.style.overflowY = 'auto';
+                }
+
+            },
+            error: function () {
+                ocultarLoader2();
+                alert('Error al cargar laboratorios');
             }
-
-        },
-        error: function () {
-            ocultarLoader2();
-            alert('Error al cargar laboratorios');
-        }
-    });
+        });
+    }
 
 }
 
@@ -420,7 +480,7 @@ function enviarPregunta2() {
                 if (resp && resp.length > 0) {
 
                     if (estadoConfiguracion === '0') {
-                        var tablaHTML = `
+                         tablaHTML = `
   <div style="overflow-x:auto;">
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
@@ -452,7 +512,7 @@ function enviarPregunta2() {
     </table>
   </div>`;
                     } else {
-                        var tablaHTML = `
+                         tablaHTML = `
   <div style="overflow-x:auto;">
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
@@ -564,10 +624,9 @@ function enviarPregunta2() {
             },
             success: function (resp) {
                 ocultarLoader2();
-                console.log(resp)
                 if (resp && resp.length > 0) {
                     if (estadoConfiguracion === '0') {
-                        var tablaHTML = `
+                         tablaHTML = `
   <div style="overflow-x:auto;">
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
@@ -599,7 +658,7 @@ function enviarPregunta2() {
     </table>
   </div>`;
                     } else {
-                        var tablaHTML = `
+                         tablaHTML = `
   <div style="overflow-x:auto;">
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
@@ -674,12 +733,16 @@ function enviarPregunta2() {
 inputBusqueda2.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
         e.preventDefault();
+
         enviarPregunta2();
+
     }
 });
 
 // Inicializar cargando laboratorios
+
 cargarLaboratorios2();
+
 
 // Botón para limpiar chat (puedes agregar en tu HTML y hacer referencia)
 const btnLimpiarChat = document.createElement('button');
@@ -688,5 +751,49 @@ btnLimpiarChat.className = 'btn btn-secondary mt-3';
 btnLimpiarChat.onclick = limpiarChat;
 document.querySelector('.chat-card').appendChild(btnLimpiarChat);
 
-// cargarLaboratorios2();
+function enviarPreguntaSinFiltro() {
+    mostrarLoader();
+    awesomplete2.list = [];
+}
+
+// btn-exportar-pdf
+btnExportarPDF.onclick = function () {
+
+    console.log(tablaHTML)
+      if (!tablaHTML || !tablaHTML.includes('<td>')) {
+        alert('No hay datos para exportar.');
+        return; // Salimos de la función
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('l', 'pt', 'a4');
+
+    // Título
+    doc.setFontSize(18);
+    doc.text('REPORTE', doc.internal.pageSize.getWidth() / 2, 40, { align: 'center' });
+
+    // Creamos un contenedor temporal para insertar la tabla y usar autoTable
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = tablaHTML;
+
+    const tabla = tempDiv.querySelector('table');
+
+    if (!tabla) {
+        alert('No hay tabla para exportar.');
+        return;
+    }
+
+    // Generar PDF
+    doc.autoTable({
+        html: tabla,
+        startY: 60,
+        theme: 'grid',
+        headStyles: { fillColor: [41, 128, 185] },
+        styles: { fontSize: 10 }
+    });
+
+    doc.save('reporte.pdf');
+};
+
+// btn-exportar-pdf
 
