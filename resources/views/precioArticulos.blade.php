@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.css" />
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
 
     <style>
         body {
@@ -214,30 +215,23 @@
                 </div>
             </div>
 
+            <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="switchSinFiltroLaboratorio">
+                <label class="form-check-label" for="switchSinFiltroLaboratorio">Buscar por artículos sin filtro de
+                    laboratorio</label>
+            </div>
 
             <div id="chat-messages">
                 <div><strong>BeizaNetFlow:</strong> Hola 👋 ¿En qué puedo ayudarte?</div>
-                {{-- <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="switchSinFiltroLaboratorio">
-                    <label class="form-check-label" for="switchSinFiltroLaboratorio">Buscar por artículos sin filtro de
-                        laboratorio</label>
-                </div> --}}
             </div>
 
             <div class="chat-input">
                 <input type="text" id="user-input" placeholder="Buscar laboratorio...">
-                <div id="divBusquedaPlus"
-                    style="width:260px; margin:20px; display:none; position: relative; z-index: 1000;">
-                    <label for="inputBusquedaPlus"
-                        style="font-size: 14px; color: #444; display: block; margin-bottom: 6px;">
-                        Buscar artículo:
-                    </label>
-                    <select id="inputBusquedaPlus" style="width: 100%;">
-
-                    </select>
+                <!-- Contenedor oculto -->
+                <div id="divBusquedaPlus" style="width:280px; display:none;">
+                    <!-- Select vacío, Tom Select lo llenará dinámicamente -->
+                    <select id="inputBusquedaPlus" style="width: 100%;"></select>
                 </div>
-
-
                 <button id="btnLimpiarChat" onclick="limpiarChat()" class="btn btn-sm btn-warning"
                     style="margin-left: 10px;">🧹 Limpiar Chat</button>
 
@@ -245,7 +239,6 @@
                 <button id="btn-exportar-pdf" style="background: red">PDF</button>
             </div>
         </div>
-
 
         <!-- Modal configuración -->
         <form method="POST" action="{{ route('subirExcel') }}" enctype="multipart/form-data"
@@ -341,6 +334,10 @@
         const RUTA_DATOS_ARTICULO_ALL = (estadoConfiguracion === '0') ?
             "{{ route('ListarDatosArticuloVisualizarAll') }}" :
             "{{ route('ListarDatosArticuloAll') }}";
+
+        const RUTA_DATOS_ARTICULO_SIN_FILTRO_LAB = (estadoConfiguracion === '0') ?
+            "{{ route('ListarDatosArticuloVisualizarSF') }}" :
+            "{{ route('ListarDatosArticuloAllSF') }}";
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/awesomplete/1.1.5/awesomplete.min.js"></script>
@@ -350,6 +347,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
 
     <script src="./scripts/CargarExcel/cargarExcel.js?v={{ time() }}"></script>
 

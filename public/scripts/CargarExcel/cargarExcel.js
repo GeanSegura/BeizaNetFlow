@@ -3,27 +3,31 @@ const inputBusqueda2 = document.getElementById('user-input');
 const inputBusquedaPlus = document.getElementById('inputBusquedaPlus');
 const divBusquedaPlus = document.getElementById('divBusquedaPlus');
 const btnExportarPDF = document.getElementById('btn-exportar-pdf');
+let seleccionadoIptBusquedaPlus = ''
 let tablaHTML = '';
 let awesomplete2 = new Awesomplete(inputBusqueda2, { minChars: 1, maxItems: 10, autoFirst: true });
 var laboratorioId = "";
 let isSinFiltro = false;
 
-//switchSinFiltroLaboratorio
-// switchCheck.addEventListener('change', function () {
-//     if (this.checked) {
-//         isSinFiltro = true;
-//         inputBusqueda2.style.display = "none"; // Ocultar
-//         divBusquedaPlus.style.display = "block"; // Mostrar
-
-//     } else {
-//         isSinFiltro = false;
-//         inputBusqueda2.value = '';
-//         inputBusqueda2.placeholder = 'Buscar artículo...';
-//         divBusquedaPlus.style.display = "none"; // Ocultar
-//         inputBusqueda2.style.display = "block"; // Mostrar
-//     }
-// });
-//switchSinFiltroLaboratorio
+switchSinFiltroLaboratorio
+switchCheck.addEventListener('change', function () {
+    if (this.checked) {
+        isSinFiltro = true;
+        inputBusqueda2.style.display = "none"; // Ocultar
+        divBusquedaPlus.style.display = "block"; // Mostrar
+    } else {
+        isSinFiltro = false;
+        inputBusqueda2.value = '';
+        divBusquedaPlus.style.display = "none"; // Ocultar
+        inputBusqueda2.style.display = "block"; // Mostrar
+        chatMessages2.innerHTML = `<div><strong>BeizaNetFlow:</strong> Hola 👋 ¿En qué puedo ayudarte?</div>`;
+        laboratorioSeleccionado2 = null;
+        estadoActual2 = 'laboratorio';
+        inputBusqueda2.placeholder = 'Buscar laboratorio...';
+        inputBusqueda2.value = '';
+    }
+});
+switchSinFiltroLaboratorio
 
 function toggleModal() {
     const modal = document.getElementById('modal-config');
@@ -259,74 +263,58 @@ inputBusqueda2.addEventListener('focus', function () {
     }
 });
 
+const tom = new TomSelect("#inputBusquedaPlus", {
+    valueField: "id",
+    labelField: "text",
+    searchField: "text",
+    load: function (query, callback) {
+        if (!query.length) return callback();
+        mostrarLoader();
 
-$('#inputBusquedaPlus').select2({
-    ajax: {
-        url: RUTA_LISTA_ARTICULOS_SF,
-        dataType: 'json',
-        delay: 250,
-        data: function (params) {
-            return { q: params.term };
-        },
-        processResults: function (data) {
-            const lista = data
-                .map(l => ({ id: l.id, text: l.articulo }))
-                .filter(v => typeof v.text === "string" && v.text.trim() !== "");
-            return { results: lista };
+        fetch(RUTA_LISTA_ARTICULOS_SF + "?q=" + encodeURIComponent(query))
+            .then(response => response.json())
+            .then(data => {
+                const lista = data
+                    .map(l => ({ id: l.id_articulo, text: l.articulo }))
+                    .filter(v => typeof v.text === "string" && v.text.trim() !== "");
+
+                callback(lista);
+                ocultarLoader();
+            })
+            .catch(() => {
+                callback();
+                ocultarLoader();
+            });
+    },
+    render: {
+        option: function (data, escape) {
+            const term = document.querySelector(".ts-input input")?.value || "";
+            if (!term) return `<div>${escape(data.text)}</div>`;
+
+            const regex = new RegExp("(" + term + ")", "gi");
+            const resaltado = escape(data.text).replace(
+                regex,
+                '<span style="background:lightgreen; font-weight:bolder; cursor:pointer;">$1</span>'
+            );
+
+            return `<div>${resaltado}</div>`;
         }
     },
-    placeholder: 'Buscar artículo...',
-    minimumInputLength: 1,
-    width: 'resolve',
-    language: {
-        searching: function () { return "Buscando..."; },
-        noResults: function () { return "No se encontraron resultados"; }
-    },
-    templateResult: function (data) {
-        if (!data.id) return data.text;
-        const term = $('.select2-search__field').val() || '';
-        if (term === '') return data.text;
-        const regex = new RegExp('(' + term + ')', 'gi');
-        return $('<span>').html(data.text.replace(regex,'<span style="background-color: yellow; font-weight: bold;">$1</span>'));
-    },
-    // Apunta al body en vez del parent
-    dropdownParent: $('body')
+    placeholder: "Buscar artículo...",
+    maxOptions: 100,
+    loadThrottle: 300
 });
 
-// Capturar la selección
-$('#inputBusquedaPlus').on('select2:select', function(e){
-    const data = e.params.data;
-    console.log('Seleccionado:', data.id, data.text);
+document.querySelector("#inputBusquedaPlus").tomselect.on("change", function (value) {
+    console.log("Valor seleccionado (id):", value);
+
+    const seleccionado = this.options[value];
+    if (seleccionado) {
+        seleccionadoIptBusquedaPlus = seleccionado.text
+        // console.log("ID:", seleccionado.id);
+        // console.log("Texto:", seleccionado.text);
+    }
 });
-
-
-// Capturar la selección
-$('#inputBusquedaPlus').on('select2:select', function (e) {
-    const dataSeleccionada = e.params.data;
-    const idSeleccionado = dataSeleccionada.id;
-    const textoSeleccionado = dataSeleccionada.text;
-
-    console.log('ID seleccionado:', idSeleccionado);
-    console.log('Texto seleccionado:', textoSeleccionado);
-
-    // // Ejemplo de enviar a otro AJAX
-    // $.ajax({
-    //     url: 'RUTA_OTRO_AJAX', // Cambia por tu URL
-    //     type: 'POST',
-    //     data: {
-    //         id: idSeleccionado,
-    //         texto: textoSeleccionado
-    //     },
-    //     success: function (response) {
-    //         console.log('Respuesta del servidor:', response);
-    //     },
-    //     error: function (err) {
-    //         console.error('Error en AJAX:', err);
-    //     }
-    // });
-});
-
-
 
 
 // Mostrar loader simple (puedes adaptar)
@@ -339,9 +327,9 @@ function ocultarLoader2() {
 }
 
 function cargarLaboratorios2() {
-    mostrarLoader();
 
     if (!isSinFiltro) {
+        mostrarLoader();
         estadoActual2 = 'articulo';
         $.ajax({
             url: RUTA_LISTA_LABORATORIOS,
@@ -368,7 +356,6 @@ function cargarLaboratorios2() {
             }
         });
     }
-
 }
 
 function cargarArticulos2(laboratorioId) {
@@ -425,6 +412,13 @@ function limpiarChat() {
     inputBusqueda2.placeholder = 'Buscar laboratorio...';
     inputBusqueda2.value = '';
     cargarLaboratorios2();
+
+    if (isSinFiltro) {
+        tom.clear();
+        tom.clearOptions();
+        inputBusqueda2.placeholder = 'Buscar artículo...';
+        seleccionadoIptBusquedaPlus = '';
+    }
 }
 
 function reiniciarProceso2() {
@@ -437,50 +431,20 @@ function reiniciarProceso2() {
 }
 
 function enviarPregunta2() {
-    if (estadoActual2 === 'laboratorio') {
+
+    if (isSinFiltro) {
         mostrarLoader2();
         $.ajax({
-            url: RUTA_LISTA_LABORATORIOS,
+            url: RUTA_DATOS_ARTICULO_SIN_FILTRO_LAB,
             method: "GET",
-            success: function (data) {
-                ocultarLoader2();
-
-                const lab = data.find(l => l.laboratorio.toLowerCase() === texto.toLowerCase() || (inputBusqueda2.dataset.idSeleccionado && inputBusqueda2.dataset.idSeleccionado == l.id_laboratorio));
-                if (!lab) {
-                    alert('Laboratorio no encontrado. Intenta de nuevo.');
-                    return;
-                }
-
-                laboratorioSeleccionado2 = lab;
-                chatMessages2.insertAdjacentHTML('beforeend', `<div><strong>Usuario:</strong> ${texto}</div>`);
-                chatMessages2.insertAdjacentHTML('beforeend', `<div><strong>BeizaNetFlow:</strong> Laboratorio seleccionado: <em>${lab.laboratorio}</em>. Ahora ingresa el artículo.</div>`);
-                chatMessages2.scrollTop = chatMessages2.scrollHeight;
-
-                inputBusqueda2.value = '';
-                inputBusqueda2.placeholder = 'Buscar artículo...';
-                estadoActual2 = 'articulo';
-                cargarArticulos2(laboratorioSeleccionado2.id_laboratorio);
-            },
-            error: function () {
-                ocultarLoader2();
-                alert('Error al validar laboratorio');
-            }
-        });
-    } else if (estadoActual2 === 'articulo') {
-        var texto = inputBusqueda2.value.trim();
-
-        mostrarLoader2();
-        $.ajax({
-            url: RUTA_DATOS_ARTICULO_ALL,
-            method: "GET",
-            data: { laboratorio_id: texto },
+            data: { laboratorio_id: seleccionadoIptBusquedaPlus },
             success: function (resp) {
                 ocultarLoader2();
 
                 if (resp && resp.length > 0) {
 
                     if (estadoConfiguracion === '0') {
-                         tablaHTML = `
+                        tablaHTML = `
   <div style="overflow-x:auto;">
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
@@ -512,7 +476,7 @@ function enviarPregunta2() {
     </table>
   </div>`;
                     } else {
-                         tablaHTML = `
+                        tablaHTML = `
   <div style="overflow-x:auto;">
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
@@ -560,7 +524,6 @@ function enviarPregunta2() {
                     }
 
 
-                    // Suponiendo que chatMessages2 es el div donde quieres mostrar
                     const chatMessages2 = document.getElementById('chat-messages');
                     chatMessages2.insertAdjacentHTML('beforeend', tablaHTML);
                 } else {
@@ -573,60 +536,197 @@ function enviarPregunta2() {
             }
         });
 
+    } else {
+        if (estadoActual2 === 'laboratorio') {
+            mostrarLoader2();
+            $.ajax({
+                url: RUTA_LISTA_LABORATORIOS,
+                method: "GET",
+                success: function (data) {
+                    ocultarLoader2();
 
+                    const lab = data.find(l => l.laboratorio.toLowerCase() === texto.toLowerCase() || (inputBusqueda2.dataset.idSeleccionado && inputBusqueda2.dataset.idSeleccionado == l.id_laboratorio));
+                    if (!lab) {
+                        alert('Laboratorio no encontrado. Intenta de nuevo.');
+                        return;
+                    }
 
+                    laboratorioSeleccionado2 = lab;
+                    chatMessages2.insertAdjacentHTML('beforeend', `<div><strong>Usuario:</strong> ${texto}</div>`);
+                    chatMessages2.insertAdjacentHTML('beforeend', `<div><strong>BeizaNetFlow:</strong> Laboratorio seleccionado: <em>${lab.laboratorio}</em>. Ahora ingresa el artículo.</div>`);
+                    chatMessages2.scrollTop = chatMessages2.scrollHeight;
 
-        inputBusqueda2.value = '';
-        inputBusqueda2.placeholder = 'Buscar artículo...';
-        estadoActual2 = 'datosArticulos';
-        laboratorioId = texto;
-        mostrarLoader2();
-        $.ajax({
-            url: RUTA_LISTA_ARTICULOS,
-            method: "GET",
-            data: { laboratorio_id: texto },
-            success: function (data) {
-
-                ocultarLoader2();
-
-                const listaArticulos = data.map(a => ({ label: a.articulo, value: a.id }));
-
-                awesomplete2.list = listaArticulos;
-
-
-
-                const awesompleteList = document.querySelector('.awesomplete ul');
-                if (awesompleteList) {
-                    awesompleteList.style.maxHeight = '360px';
-                    awesompleteList.style.overflowY = 'auto';
+                    inputBusqueda2.value = '';
+                    inputBusqueda2.placeholder = 'Buscar artículo...';
+                    estadoActual2 = 'articulo';
+                    cargarArticulos2(laboratorioSeleccionado2.id_laboratorio);
+                },
+                error: function () {
+                    ocultarLoader2();
+                    alert('Error al validar laboratorio');
                 }
+            });
+        } else if (estadoActual2 === 'articulo') {
+            var texto = inputBusqueda2.value.trim();
 
-                chatMessages2.insertAdjacentHTML('beforeend', `<div><strong>Usuario:</strong> ${texto}</div>`);
-                chatMessages2.insertAdjacentHTML('beforeend', `<div><strong>BeizaNetFlow:</strong> Procesando artículo <em>${"artículo"}</em>...</div>`);
-                chatMessages2.scrollTop = chatMessages2.scrollHeight;
-            },
-            error: function () {
-                ocultarLoader2();
-                alert('Error al validar artículo');
-            }
-        });
-    }
+            mostrarLoader2();
+            $.ajax({
+                url: RUTA_DATOS_ARTICULO_ALL,
+                method: "GET",
+                data: { laboratorio_id: texto },
+                success: function (resp) {
+                    ocultarLoader2();
 
-    else if (estadoActual2 === 'datosArticulos') {
-        var textoArticulo = inputBusqueda2.value.trim();
-        mostrarLoader2();
-        $.ajax({
-            url: RUTA_DATOS_ARTICULO,
-            method: 'GET',
-            data: {
-                laboratorio_id: laboratorioId,
-                articulo_id: textoArticulo
-            },
-            success: function (resp) {
-                ocultarLoader2();
-                if (resp && resp.length > 0) {
-                    if (estadoConfiguracion === '0') {
-                         tablaHTML = `
+                    if (resp && resp.length > 0) {
+
+                        if (estadoConfiguracion === '0') {
+                            tablaHTML = `
+  <div style="overflow-x:auto;">
+    <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
+      <thead class="table-primary">
+        <tr>
+          <th>ID Artículo</th>
+          <th>Artículo</th>
+          <th>Precio Lista</th>
+          <th>Stock</th>
+          <th>Laboratorio</th>
+          <th>Precio mínimo</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+                            resp.forEach(item => {
+                                tablaHTML += `
+    <tr>
+        <td>${item.id_articulo || ''}</td>
+        <td>${item.articulo || ''}</td>
+      <td>${item.precio_lista || ''}</td>
+      <td>${item.stock || ''}</td>
+      <td>${item.laboratorio || ''}</td>
+      <td>${item.precio_final || ''}</td>
+    </tr>`;
+                            });
+
+                            tablaHTML += `
+      </tbody>
+    </table>
+  </div>`;
+                        } else {
+                            tablaHTML = `
+  <div style="overflow-x:auto;">
+    <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
+      <thead class="table-primary">
+        <tr>
+          <th>ID Artículo</th>
+          <th>Artículo</th>
+          <th>Precio Lista</th>
+          <th>Precio sin IGV PL1</th>
+          <th>Precio Contado</th>
+          <th>Precio sin IGV PL2</th>
+          <th>Laboratorio</th>
+          <th>Stock</th>
+          <th>Costo Proveedor</th>
+          <th>Costo Proveedor con IGV</th>
+          <th>Adicional 1</th>
+          <th>Adicional 2</th>
+          <th>Precio mínimo</th>
+        </tr>
+      </thead>
+      <tbody>`;
+
+                            resp.forEach(item => {
+                                tablaHTML += `
+    <tr>
+      <td>${item.id_articulo || ''}</td>
+      <td>${item.articulo || ''}</td>
+      <td>${item.precio_lista || ''}</td>
+      <td>${item.prec_list_sin_igv_pl1 || ''}</td>
+      <td>${item.precio_contado || ''}</td>
+      <td>${item.prec_list_sin_IGV_pl2 || ''}</td>
+      <td>${item.laboratorio || ''}</td>
+      <td>${item.stock || ''}</td>
+      <td>${item.costo_proveedor || ''}</td>
+      <td>${item.costo_proveedor_con_igv || ''}</td>
+      <td>${item.adicional1 || ''}</td>
+      <td>${item.adicional2 || ''}</td>
+      <td>${item.precio_final || ''}</td>
+    </tr>`;
+                            });
+
+                            tablaHTML += `
+      </tbody>
+    </table>
+  </div>`;
+                        }
+
+
+                        // Suponiendo que chatMessages2 es el div donde quieres mostrar
+                        const chatMessages2 = document.getElementById('chat-messages');
+                        chatMessages2.insertAdjacentHTML('beforeend', tablaHTML);
+                    } else {
+                        alert("No hay datos para mostrar.");
+                    }
+                },
+                error: function () {
+                    ocultarLoader2();
+                    alert('Error al cargar laboratorios');
+                }
+            });
+
+
+
+
+            inputBusqueda2.value = '';
+            inputBusqueda2.placeholder = 'Buscar artículo...';
+            estadoActual2 = 'datosArticulos';
+            laboratorioId = texto;
+            mostrarLoader2();
+            $.ajax({
+                url: RUTA_LISTA_ARTICULOS,
+                method: "GET",
+                data: { laboratorio_id: texto },
+                success: function (data) {
+
+                    ocultarLoader2();
+
+                    const listaArticulos = data.map(a => ({ label: a.articulo, value: a.id }));
+
+                    awesomplete2.list = listaArticulos;
+
+
+
+                    const awesompleteList = document.querySelector('.awesomplete ul');
+                    if (awesompleteList) {
+                        awesompleteList.style.maxHeight = '360px';
+                        awesompleteList.style.overflowY = 'auto';
+                    }
+
+                    chatMessages2.insertAdjacentHTML('beforeend', `<div><strong>Usuario:</strong> ${texto}</div>`);
+                    chatMessages2.insertAdjacentHTML('beforeend', `<div><strong>BeizaNetFlow:</strong> Procesando artículo <em>${"artículo"}</em>...</div>`);
+                    chatMessages2.scrollTop = chatMessages2.scrollHeight;
+                },
+                error: function () {
+                    ocultarLoader2();
+                    alert('Error al validar artículo');
+                }
+            });
+        }
+
+        else if (estadoActual2 === 'datosArticulos') {
+            var textoArticulo = inputBusqueda2.value.trim();
+            mostrarLoader2();
+            $.ajax({
+                url: RUTA_DATOS_ARTICULO,
+                method: 'GET',
+                data: {
+                    laboratorio_id: laboratorioId,
+                    articulo_id: textoArticulo
+                },
+                success: function (resp) {
+                    ocultarLoader2();
+                    if (resp && resp.length > 0) {
+                        if (estadoConfiguracion === '0') {
+                            tablaHTML = `
   <div style="overflow-x:auto;">
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
@@ -641,8 +741,8 @@ function enviarPregunta2() {
       </thead>
       <tbody>`;
 
-                        resp.forEach(item => {
-                            tablaHTML += `
+                            resp.forEach(item => {
+                                tablaHTML += `
     <tr>
     <td>${item.id_articulo || ''}</td>
     <td>${item.articulo || ''}</td>
@@ -651,14 +751,14 @@ function enviarPregunta2() {
       <td>${item.laboratorio || ''}</td>
       <td>${item.precio_final || ''}</td>
     </tr>`;
-                        });
+                            });
 
-                        tablaHTML += `
+                            tablaHTML += `
       </tbody>
     </table>
   </div>`;
-                    } else {
-                         tablaHTML = `
+                        } else {
+                            tablaHTML = `
   <div style="overflow-x:auto;">
     <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
       <thead class="table-primary">
@@ -680,8 +780,8 @@ function enviarPregunta2() {
       </thead>
       <tbody>`;
 
-                        resp.forEach(item => {
-                            tablaHTML += `
+                            resp.forEach(item => {
+                                tablaHTML += `
     <tr>
       <td>${item.id_articulo || ''}</td>
       <td>${item.articulo || ''}</td>
@@ -697,36 +797,37 @@ function enviarPregunta2() {
       <td>${item.adicional2 || ''}</td>
       <td>${item.precio_final || ''}</td>
     </tr>`;
-                        });
+                            });
 
-                        tablaHTML += `
+                            tablaHTML += `
       </tbody>
     </table>
   </div>`;
+                        }
+
+                        // Suponiendo que chatMessages2 es el div donde quieres mostrar
+                        const chatMessages2 = document.getElementById('chat-messages');
+                        chatMessages2.insertAdjacentHTML('beforeend', tablaHTML);
+                    } else {
+                        alert("No hay datos para mostrar.");
                     }
 
-                    // Suponiendo que chatMessages2 es el div donde quieres mostrar
-                    const chatMessages2 = document.getElementById('chat-messages');
-                    chatMessages2.insertAdjacentHTML('beforeend', tablaHTML);
-                } else {
-                    alert("No hay datos para mostrar.");
+                    chatMessages2.insertAdjacentHTML('beforeend', `<button id="btnReiniciar2" class="btn btn-warning mt-3">Reiniciar selección</button>`);
+                    chatMessages2.scrollTop = chatMessages2.scrollHeight;
+
+                    // Asignar evento para reiniciar proceso
+                    document.getElementById('btnReiniciar2').onclick = reiniciarProceso2;
+                },
+                error: function () {
+                    ocultarLoader2();
+                    alert('Error al procesar artículo');
                 }
+            });
 
-                chatMessages2.insertAdjacentHTML('beforeend', `<button id="btnReiniciar2" class="btn btn-warning mt-3">Reiniciar selección</button>`);
-                chatMessages2.scrollTop = chatMessages2.scrollHeight;
-
-                // Asignar evento para reiniciar proceso
-                document.getElementById('btnReiniciar2').onclick = reiniciarProceso2;
-            },
-            error: function () {
-                ocultarLoader2();
-                alert('Error al procesar artículo');
-            }
-        });
-
+        }
+        inputBusqueda2.value = '';
+        inputBusqueda2.dataset.idSeleccionado = ''; // limpiar id seleccionado
     }
-    inputBusqueda2.value = '';
-    inputBusqueda2.dataset.idSeleccionado = ''; // limpiar id seleccionado
 }
 
 // Evento para botón enter en el input
@@ -741,7 +842,9 @@ inputBusqueda2.addEventListener('keydown', function (e) {
 
 // Inicializar cargando laboratorios
 
-cargarLaboratorios2();
+if (!isSinFiltro) {
+    cargarLaboratorios2();
+}
 
 
 // Botón para limpiar chat (puedes agregar en tu HTML y hacer referencia)
@@ -760,7 +863,7 @@ function enviarPreguntaSinFiltro() {
 btnExportarPDF.onclick = function () {
 
     console.log(tablaHTML)
-      if (!tablaHTML || !tablaHTML.includes('<td>')) {
+    if (!tablaHTML || !tablaHTML.includes('<td>')) {
         alert('No hay datos para exportar.');
         return; // Salimos de la función
     }
