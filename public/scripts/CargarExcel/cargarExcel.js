@@ -454,7 +454,6 @@ function enviarPregunta2() {
           <th>Precio Lista</th>
           <th>Stock</th>
           <th>Laboratorio</th>
-          <th>Precio mínimo</th>
         </tr>
       </thead>
       <tbody>`;
@@ -467,7 +466,6 @@ function enviarPregunta2() {
       <td>${item.precio_lista || ''}</td>
       <td>${item.stock || ''}</td>
       <td>${item.laboratorio || ''}</td>
-      <td>${item.precio_final || ''}</td>
     </tr>`;
                         });
 
@@ -492,7 +490,6 @@ function enviarPregunta2() {
           <th>Costo Proveedor</th>
           <th>Costo Proveedor con IGV</th>
           <th>Adicional 1</th>
-          <th>Adicional 2</th>
           <th>Precio mínimo</th>
         </tr>
       </thead>
@@ -513,7 +510,6 @@ function enviarPregunta2() {
       <td>${item.costo_proveedor_con_igv || ''}</td>
       <td>${item.adicional1 || ''}</td>
       <td>${item.adicional2 || ''}</td>
-      <td>${item.precio_final || ''}</td>
     </tr>`;
                         });
 
@@ -590,7 +586,6 @@ function enviarPregunta2() {
           <th>Precio Lista</th>
           <th>Stock</th>
           <th>Laboratorio</th>
-          <th>Precio mínimo</th>
         </tr>
       </thead>
       <tbody>`;
@@ -603,7 +598,6 @@ function enviarPregunta2() {
       <td>${item.precio_lista || ''}</td>
       <td>${item.stock || ''}</td>
       <td>${item.laboratorio || ''}</td>
-      <td>${item.precio_final || ''}</td>
     </tr>`;
                             });
 
@@ -628,7 +622,6 @@ function enviarPregunta2() {
           <th>Costo Proveedor</th>
           <th>Costo Proveedor con IGV</th>
           <th>Adicional 1</th>
-          <th>Adicional 2</th>
           <th>Precio mínimo</th>
         </tr>
       </thead>
@@ -649,7 +642,6 @@ function enviarPregunta2() {
       <td>${item.costo_proveedor_con_igv || ''}</td>
       <td>${item.adicional1 || ''}</td>
       <td>${item.adicional2 || ''}</td>
-      <td>${item.precio_final || ''}</td>
     </tr>`;
                             });
 
@@ -736,7 +728,6 @@ function enviarPregunta2() {
           <th>Precio Lista</th>>
           <th>Stock</th>
           <th>Laboratorio</th>
-          <th>Precio mínimo</th>
         </tr>
       </thead>
       <tbody>`;
@@ -749,7 +740,6 @@ function enviarPregunta2() {
       <td>${item.precio_lista || ''}</td>
       <td>${item.stock || ''}</td>
       <td>${item.laboratorio || ''}</td>
-      <td>${item.precio_final || ''}</td>
     </tr>`;
                             });
 
@@ -774,7 +764,6 @@ function enviarPregunta2() {
           <th>Costo Proveedor</th>
           <th>Costo Proveedor con IGV</th>
           <th>Adicional 1</th>
-          <th>Adicional 2</th>
           <th>Precio mínimo</th>
         </tr>
       </thead>
@@ -795,7 +784,6 @@ function enviarPregunta2() {
       <td>${item.costo_proveedor_con_igv || ''}</td>
       <td>${item.adicional1 || ''}</td>
       <td>${item.adicional2 || ''}</td>
-      <td>${item.precio_final || ''}</td>
     </tr>`;
                             });
 

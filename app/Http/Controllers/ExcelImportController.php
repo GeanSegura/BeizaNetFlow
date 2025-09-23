@@ -43,19 +43,33 @@ class ExcelImportController extends Controller
             // Validar campos necesarios
             if (empty($valores[0]) || empty($valores[1])) continue;
 
-            $id_articulo                  = $valores[0];
+            // $id_articulo                  = $valores[0];
+            // $articulo                     = $valores[1];
+            // $precio_lista                 = is_numeric($valores[2]) ? $valores[2] : null;
+            // $prec_list_sin_igv_pl1        = is_numeric($valores[3]) ? $valores[3] : null;
+            // $precio_contado               = is_numeric($valores[4]) ? $valores[4] : null;
+            // $prec_list_sin_igv_pl2        = is_numeric($valores[5]) ? $valores[5] : null;
+            // $id_laboratorio               = $valores[6];
+            // $laboratorio                  = $valores[7];
+            // $stock                        = is_numeric($valores[8]) ? $valores[8] : null;
+            // $costo_proveedor              = is_numeric($valores[9]) ? $valores[9] : null;
+            // $costo_proveedor_con_igv      = is_numeric($valores[10]) ? $valores[10] : null;
+            // $adicional1                   = is_numeric($valores[11]) ? $valores[11] : null;
+            // $adicional2                   = is_numeric($valores[12]) ? $valores[12] : null;
+
+                  $id_articulo                  = $valores[0];
             $articulo                     = $valores[1];
-            $precio_lista                 = is_numeric($valores[2]) ? $valores[2] : null;
-            $prec_list_sin_igv_pl1        = is_numeric($valores[3]) ? $valores[3] : null;
-            $precio_contado               = is_numeric($valores[4]) ? $valores[4] : null;
-            $prec_list_sin_igv_pl2        = is_numeric($valores[5]) ? $valores[5] : null;
+            $precio_lista                 = $valores[2];
+            $prec_list_sin_igv_pl1        = $valores[3];
+            $precio_contado               = $valores[4];
+            $prec_list_sin_igv_pl2        = $valores[5];
             $id_laboratorio               = $valores[6];
             $laboratorio                  = $valores[7];
-            $stock                        = is_numeric($valores[8]) ? $valores[8] : null;
-            $costo_proveedor              = is_numeric($valores[9]) ? $valores[9] : null;
-            $costo_proveedor_con_igv      = is_numeric($valores[10]) ? $valores[10] : null;
-            $adicional1                   = is_numeric($valores[11]) ? $valores[11] : null;
-            $adicional2                   = is_numeric($valores[12]) ? $valores[12] : null;
+            $stock                        = $valores[8];
+            $costo_proveedor              = $valores[9];
+            $costo_proveedor_con_igv      = $valores[10];
+            $adicional1                   = $valores[11];
+            $adicional2                   = $valores[12];
 
             DB::statement("CALL sp_insertar_tbl_excel_temp(?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?,?,?)", [
                 $id_articulo,
