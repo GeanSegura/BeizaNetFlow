@@ -19,78 +19,60 @@ class ExcelImportController extends Controller
         DB::statement("CALL sp_truncar_tbl_excel_temp()");
 
         $archivo = $request->file('archivo_excel');
-        $spreadsheet = IOFactory::load($archivo);
-        $hoja = $spreadsheet->getActiveSheet();
+$spreadsheet = IOFactory::load($archivo);
+$hoja = $spreadsheet->getActiveSheet();
 
-        foreach ($hoja->getRowIterator() as $index => $fila) {
-            $celdas = $fila->getCellIterator();
-            $celdas->setIterateOnlyExistingCells(false);
+$headers = [];
+foreach ($hoja->getRowIterator() as $index => $fila) {
+    $celdas = $fila->getCellIterator();
+    $celdas->setIterateOnlyExistingCells(false);
 
-            $valores = [];
-            foreach ($celdas as $celda) {
-                $valores[] = trim((string) $celda->getValue());
+    $valores = [];
+    foreach ($celdas as $celda) {
+        $valores[] = trim((string) $celda->getValue());
+    }
+
+    // La primera fila es la cabecera
+    if ($index === 1) {
+        foreach ($valores as $colIndex => $valor) {
+            if (!empty($valor) && $colIndex < 15) {
+                // Guardamos hasta 15 columnas con cabecera
+                $headers[$colIndex] = $valor;
             }
-
-            // Saltar cabecera
-            if ($index === 1) continue;
-
-            for ($i = 0; $i <= 13; $i++) {
-                if (!isset($valores[$i])) {
-                    $valores[$i] = null;
-                }
-            }
-
-            // Validar campos necesarios
-            if (empty($valores[0]) || empty($valores[1])) continue;
-
-            // $id_articulo                  = $valores[0];
-            // $articulo                     = $valores[1];
-            // $precio_lista                 = is_numeric($valores[2]) ? $valores[2] : null;
-            // $prec_list_sin_igv_pl1        = is_numeric($valores[3]) ? $valores[3] : null;
-            // $precio_contado               = is_numeric($valores[4]) ? $valores[4] : null;
-            // $prec_list_sin_igv_pl2        = is_numeric($valores[5]) ? $valores[5] : null;
-            // $id_laboratorio               = $valores[6];
-            // $laboratorio                  = $valores[7];
-            // $stock                        = is_numeric($valores[8]) ? $valores[8] : null;
-            // $costo_proveedor              = is_numeric($valores[9]) ? $valores[9] : null;
-            // $costo_proveedor_con_igv      = is_numeric($valores[10]) ? $valores[10] : null;
-            // $adicional1                   = is_numeric($valores[11]) ? $valores[11] : null;
-            // $adicional2                   = is_numeric($valores[12]) ? $valores[12] : null;
-
-                  $id_articulo                  = $valores[0];
-            $articulo                     = $valores[1];
-            $precio_lista                 = $valores[2];
-            $prec_list_sin_igv_pl1        = $valores[3];
-            $precio_contado               = $valores[4];
-            $prec_list_sin_igv_pl2        = $valores[5];
-            $id_laboratorio               = $valores[6];
-            $laboratorio                  = $valores[7];
-            $stock                        = $valores[8];
-            $costo_proveedor              = $valores[9];
-            $costo_proveedor_con_igv      = $valores[10];
-            $adicional1                   = $valores[11];
-            $adicional2                   = $valores[12];
-
-            DB::statement("CALL sp_insertar_tbl_excel_temp(?, ?, ?, ?, ?, ?,?,?,?,?,?,?,?,?,?,?,?)", [
-                $id_articulo,
-                $articulo,
-                $precio_lista,
-                $prec_list_sin_igv_pl1,
-                $precio_contado,
-                $prec_list_sin_igv_pl2,
-                $id_laboratorio,
-                $laboratorio,
-                $stock,
-                $costo_proveedor,
-                $costo_proveedor_con_igv,
-                $adicional1,
-                $adicional2,
-                null,
-                null,
-                null,
-                null
-            ]);
         }
+    }
+
+    // Saltar filas totalmente vacías
+    if (count(array_filter($valores)) === 0) {
+        continue;
+    }
+
+    // Crear arreglo de 15 columnas máximo
+    $filaData = [];
+    for ($i = 0; $i < 15; $i++) {
+        $filaData[$i] = $valores[$i] ?? null;
+    }
+
+    // Llamar al SP con 15 parámetros fijos
+    DB::statement("CALL sp_insertar_tbl_excel_temp(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+        $filaData[0],
+        $filaData[1],
+        $filaData[2],
+        $filaData[3],
+        $filaData[4],
+        $filaData[5],
+        $filaData[6],
+        $filaData[7],
+        $filaData[8],
+        $filaData[9],
+        $filaData[10],
+        $filaData[11],
+        $filaData[12],
+        $filaData[13],
+        $filaData[14],
+    ]);
+}
+
 
         return back()
             ->with('success', 'Excel procesado correctamente.')
@@ -133,14 +115,7 @@ class ExcelImportController extends Controller
         $datos = DB::select('CALL sp_obtener_datos_articulo_excel(?,?)', [$laboratorio_id, $articulo_id]);
         return response()->json($datos);
     }
-
-     public function ListarDatosArticuloAll(Request $request)
-    {
-        $laboratorio_id = $request->input('laboratorio_id');
-        $datos = DB::select('CALL sp_obtener_datos_articulo_excel_all(?)', [$laboratorio_id]);
-        return response()->json($datos);
-    }
-
+    // visor normal
     public function ListarDatosArticuloVisualizar(Request $request)
     {
         $articulo_id = $request->input('articulo_id');
@@ -149,14 +124,22 @@ class ExcelImportController extends Controller
         return response()->json($datos);
     }
 
-     public function ListarDatosArticuloVisualizarAll(Request $request)
+    public function ListarDatosArticuloAll(Request $request)
+    {
+        $laboratorio_id = $request->input('laboratorio_id');
+        $datos = DB::select('CALL sp_obtener_datos_articulo_excel_all(?)', [$laboratorio_id]);
+        return response()->json($datos);
+    }
+
+
+    public function ListarDatosArticuloVisualizarAll(Request $request)
     {
         $laboratorio_id = $request->input('laboratorio_id');
         $datos = DB::select('CALL sp_obtener_datos_articulo_excel_rol_visualizar_all(?)', [$laboratorio_id]);
         return response()->json($datos);
     }
 
-     public function ListarDatosArticuloAllSF(Request $request)
+    public function ListarDatosArticuloAllSF(Request $request)
     {
         $laboratorio_id = $request->input('laboratorio_id');
         $datos = DB::select('CALL sp_obtener_datos_articulo_excel_sin_filtro_lab(?)', [$laboratorio_id]);
@@ -176,5 +159,4 @@ class ExcelImportController extends Controller
         $datos = DB::select('CALL sp_listar_articulos_sin_filtro_lab(?)', [$q]);
         return response()->json($datos);
     }
-
 }

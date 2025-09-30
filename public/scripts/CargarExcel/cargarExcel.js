@@ -91,20 +91,21 @@ function ocultarLoader() {
 }
 // FIN LOADER
 
-const inputBusqueda = document.getElementById('busqueda');
-const awesomplete = new Awesomplete(inputBusqueda, {
-    minChars: 1,
-    maxItems: 15,
-    autoFirst: true
-});
+// const inputBusqueda = document.getElementById('busqueda');
+// const awesomplete = new Awesomplete(inputBusqueda, {
+//     minChars: 1,
+//     maxItems: 15,
+//     autoFirst: true
+// });
 
 // 🌀 Cargar sugerencias para el autocompletado una sola vez
 let cacheLaboratorios = [];
 
 function cargarSugerencias() {
+    alert("aquí2")
     if (cacheLaboratorios.length > 0) {
         const lista = cacheLaboratorios
-            .map(l => l.laboratorio)
+            .map(l => l.columna3)
             .filter((v, i, a) => v && a.indexOf(v) === i);
         awesomplete.list = lista;
         return;
@@ -116,10 +117,11 @@ function cargarSugerencias() {
         url: RUTA_LISTA_LABORATORIOS,
         method: "GET",
         success: function (data) {
+            console.info(data);
             cacheLaboratorios = data;
 
             const lista = data
-                .map(l => l.laboratorio)
+                .map(l => l.columna3)
                 .filter((v, i, a) => v && a.indexOf(v) === i);
 
             awesomplete.list = lista;
@@ -134,8 +136,8 @@ function cargarSugerencias() {
 }
 
 // Trigger cuando el input gana foco o cambia
-inputBusqueda.addEventListener('focus', cargarSugerencias);
-inputBusqueda.addEventListener('input', cargarSugerencias);
+// inputBusqueda.addEventListener('focus', cargarSugerencias);
+// inputBusqueda.addEventListener('input', cargarSugerencias);
 
 $('#btnBuscar').on('click', function () {
     const texto = $('#busqueda').val().trim().toLowerCase();
@@ -193,6 +195,7 @@ $('#btnBuscar').on('click', function () {
         url: RUTA_LISTA_LABORATORIOS,
         method: "GET",
         success: function (data) {
+            console.info(data);
             cacheLaboratorios = data;
             filtrarYMostrar(data);
         },
@@ -257,6 +260,7 @@ let laboratorioSeleccionado2 = null;
 let yaCargoLaboratorios = false;
 
 inputBusqueda2.addEventListener('focus', function () {
+
     if (!yaCargoLaboratorios) {
         yaCargoLaboratorios = true;
         cargarLaboratorios2();
@@ -326,8 +330,8 @@ function ocultarLoader2() {
     ocultarLoader();
 }
 
+//Ingresa al inicio
 function cargarLaboratorios2() {
-
     if (!isSinFiltro) {
         mostrarLoader();
         estadoActual2 = 'articulo';
@@ -335,11 +339,12 @@ function cargarLaboratorios2() {
             url: RUTA_LISTA_LABORATORIOS,
             method: "GET",
             success: function (data) {
+                console.info(data);
                 ocultarLoader2();
 
                 const lista = data
-                    .filter(l => l.laboratorio && l.id_laboratorio)
-                    .map(l => ({ label: l.laboratorio, value: l.id_laboratorio }));
+                    .filter(l => l.columna3)
+                    .map(l => ({ label: l.columna3, value: l.columna3 }));
 
                 awesomplete2.list = lista;
 
@@ -368,8 +373,8 @@ function cargarArticulos2(laboratorioId) {
             ocultarLoader2();
 
             const lista = data
-                .filter(a => a.articulo && a.id)
-                .map(a => ({ label: a.articulo, value: a.id }));
+                .filter(a => a.columna2 && a.id)
+                .map(a => ({ label: a.columna2, value: a.id }));
 
             awesomplete2.list = lista;
 
@@ -431,7 +436,6 @@ function reiniciarProceso2() {
 }
 
 function enviarPregunta2() {
-
     if (isSinFiltro) {
         mostrarLoader2();
         $.ajax({
@@ -534,6 +538,7 @@ function enviarPregunta2() {
 
     } else {
         if (estadoActual2 === 'laboratorio') {
+            alert("aquí1");
             mostrarLoader2();
             $.ajax({
                 url: RUTA_LISTA_LABORATORIOS,
@@ -541,7 +546,7 @@ function enviarPregunta2() {
                 success: function (data) {
                     ocultarLoader2();
 
-                    const lab = data.find(l => l.laboratorio.toLowerCase() === texto.toLowerCase() || (inputBusqueda2.dataset.idSeleccionado && inputBusqueda2.dataset.idSeleccionado == l.id_laboratorio));
+                    const lab = data.find(l => l.columna3.toLowerCase() === texto.toLowerCase() || (inputBusqueda2.dataset.idSeleccionado && inputBusqueda2.dataset.idSeleccionado == l.columna3));
                     if (!lab) {
                         alert('Laboratorio no encontrado. Intenta de nuevo.');
                         return;
@@ -562,6 +567,9 @@ function enviarPregunta2() {
                     alert('Error al validar laboratorio');
                 }
             });
+
+            // visualizar
+
         } else if (estadoActual2 === 'articulo') {
             var texto = inputBusqueda2.value.trim();
 
@@ -576,35 +584,42 @@ function enviarPregunta2() {
                     if (resp && resp.length > 0) {
 
                         if (estadoConfiguracion === '0') {
-                            tablaHTML = `
-  <div style="overflow-x:auto;">
-    <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
-      <thead class="table-primary">
-        <tr>
-          <th>ID Artículo</th>
-          <th>Artículo</th>
-          <th>Precio Lista</th>
-          <th>Stock</th>
-          <th>Laboratorio</th>
-        </tr>
-      </thead>
-      <tbody>`;
-
-                            resp.forEach(item => {
-                                tablaHTML += `
-    <tr>
-        <td>${item.id_articulo || ''}</td>
-        <td>${item.articulo || ''}</td>
-      <td>${item.precio_lista || ''}</td>
-      <td>${item.stock || ''}</td>
-      <td>${item.laboratorio || ''}</td>
-    </tr>`;
+                            // 1️⃣ Obtener las cabeceras desde la primera fila
+                            const headers = Object.keys(resp[0]).filter(key => {
+                                // Filtramos solo las columnas que tienen cabecera no vacía ni nula
+                                return resp[0][key] !== null && resp[0][key] !== '';
                             });
 
+                            // 2️⃣ Construir tabla dinámica solo con esas columnas
+                            let tablaHTML = `
+            <div style="overflow-x:auto;">
+                <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
+                    <thead class="table-primary">
+                        <tr>`;
+
+                            headers.forEach(header => {
+                                tablaHTML += `<th>${resp[0][header]}</th>`; // primera fila como cabecera
+                            });
+
+                            tablaHTML += `</tr>
+                    </thead>
+                    <tbody>`;
+
+                            // 3️⃣ Recorrer el resto de filas (desde la 2da)
+                            for (let i = 1; i < resp.length; i++) {
+                                let row = resp[i];
+                                tablaHTML += `<tr>`;
+                                headers.forEach(header => {
+                                    tablaHTML += `<td>${row[header] || ''}</td>`;
+                                });
+                                tablaHTML += `</tr>`;
+                            }
+
                             tablaHTML += `
-      </tbody>
-    </table>
-  </div>`;
+                    </tbody>
+                </table>
+            </div>`;
+                            // editor
                         } else {
                             tablaHTML = `
   <div style="overflow-x:auto;">
@@ -681,7 +696,7 @@ function enviarPregunta2() {
 
                     ocultarLoader2();
 
-                    const listaArticulos = data.map(a => ({ label: a.articulo, value: a.id }));
+                    const listaArticulos = data.map(a => ({ label: a.columna2, value: 1 }));
 
                     awesomplete2.list = listaArticulos;
 
@@ -718,79 +733,74 @@ function enviarPregunta2() {
                     ocultarLoader2();
                     if (resp && resp.length > 0) {
                         if (estadoConfiguracion === '0') {
-                            tablaHTML = `
-  <div style="overflow-x:auto;">
-    <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
-      <thead class="table-primary">
-        <tr>
-        <th>ID Artículo</th>
-        <th>Artículo</th>
-          <th>Precio Lista</th>>
-          <th>Stock</th>
-          <th>Laboratorio</th>
-        </tr>
-      </thead>
-      <tbody>`;
 
-                            resp.forEach(item => {
-                                tablaHTML += `
-    <tr>
-    <td>${item.id_articulo || ''}</td>
-    <td>${item.articulo || ''}</td>
-      <td>${item.precio_lista || ''}</td>
-      <td>${item.stock || ''}</td>
-      <td>${item.laboratorio || ''}</td>
-    </tr>`;
-                            });
+            // 1) Cabecera (primera fila)
+            const cabecera = resp[0];
 
-                            tablaHTML += `
-      </tbody>
-    </table>
-  </div>`;
+            // Filtramos solo las columnas con nombre válido
+            const headers = Object.keys(cabecera).filter(h => {
+                return cabecera[h] !== null && cabecera[h] !== '';
+            });
+
+            // 2) Construimos tabla
+         tablaHTML = `
+            <div style="overflow-x:auto;">
+                <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
+                    <thead class="table-primary">
+                        <tr>`;
+
+            headers.forEach(h => {
+                tablaHTML += `<th>${cabecera[h]}</th>`;
+            });
+
+            tablaHTML += `</tr>
+                    </thead>
+                    <tbody>`;
+
+            // 3) Filas de datos desde resp[1]
+            for (let i = 1; i < resp.length; i++) {
+                tablaHTML += `<tr>`;
+                headers.forEach(h => {
+                    tablaHTML += `<td>${resp[i][h] || ''}</td>`;
+                });
+                tablaHTML += `</tr>`;
+            }
+
+            tablaHTML += `
+                    </tbody>
+                </table>
+            </div>`;
+
                         } else {
-                            tablaHTML = `
-  <div style="overflow-x:auto;">
-    <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
-      <thead class="table-primary">
-        <tr>
-          <th>ID Artículo</th>
-          <th>Artículo</th>
-          <th>Precio Lista</th>
-          <th>Precio sin IGV PL1</th>
-          <th>Precio Contado</th>
-          <th>Precio sin IGV PL2</th>
-          <th>Laboratorio</th>
-          <th>Stock</th>
-          <th>Costo Proveedor</th>
-          <th>Costo Proveedor con IGV</th>
-          <th>Adicional 1</th>
-          <th>Precio mínimo</th>
-        </tr>
-      </thead>
-      <tbody>`;
+                              // 1) Fila de cabeceras
+            const headers = Object.keys(resp[0]).filter(key => resp[0][key]);
+            let tablaHTML = `
+            <div style="overflow-x:auto;">
+                <table class="table table-bordered mt-3" style="width:100%; table-layout:auto;">
+                    <thead class="table-primary">
+                        <tr>`;
 
-                            resp.forEach(item => {
-                                tablaHTML += `
-    <tr>
-      <td>${item.id_articulo || ''}</td>
-      <td>${item.articulo || ''}</td>
-      <td>${item.precio_lista || ''}</td>
-      <td>${item.prec_list_sin_igv_pl1 || ''}</td>
-      <td>${item.precio_contado || ''}</td>
-      <td>${item.prec_list_sin_IGV_pl2 || ''}</td>
-      <td>${item.laboratorio || ''}</td>
-      <td>${item.stock || ''}</td>
-      <td>${item.costo_proveedor || ''}</td>
-      <td>${item.costo_proveedor_con_igv || ''}</td>
-      <td>${item.adicional1 || ''}</td>
-      <td>${item.adicional2 || ''}</td>
-    </tr>`;
-                            });
+            headers.forEach(h => {
+                tablaHTML += `<th>${resp[0][h]}</th>`;
+            });
 
-                            tablaHTML += `
-      </tbody>
-    </table>
-  </div>`;
+            tablaHTML += `</tr>
+                    </thead>
+                    <tbody>`;
+
+            // 2) Recorrer datos desde la segunda fila
+            for (let i = 1; i < resp.length; i++) {
+                tablaHTML += `<tr>`;
+                headers.forEach(h => {
+                    tablaHTML += `<td>${resp[i][h] || ''}</td>`;
+                });
+                tablaHTML += `</tr>`;
+            }
+
+            tablaHTML += `
+                    </tbody>
+                </table>
+            </div>`;
                         }
 
                         // Suponiendo que chatMessages2 es el div donde quieres mostrar

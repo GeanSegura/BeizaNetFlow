@@ -275,7 +275,7 @@
             </script>
         @endif
 
-        <div class="mb-3">
+        {{-- <div class="mb-3">
             <label for="busqueda">Buscar laboratorio:</label>
             <div class="input-group">
                 <input type="text" id="busqueda" class="form-control" placeholder="Ej: Caferma, Química, etc.">
@@ -307,7 +307,7 @@
             No se encontraron laboratorios.
         </div>
 
-        <button id="btnGuardar" class="btn btn-primary w-100 mt-3" type="button">Guardar Cambios</button>
+        <button id="btnGuardar" class="btn btn-primary w-100 mt-3" type="button">Guardar Cambios</button> --}}
     </div>
     </div>
 
